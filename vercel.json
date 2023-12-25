@@ -1,0 +1,27 @@
+{
+    "this for tring to deploy a project to vercel hosti remove this from file the file and kabe a value for this ": {
+        "builds": [
+            {
+                "src": "core/wsgi.py",
+                "use": "@vercel/python",
+                "config": {
+                    "maxLambdaSize": "15mb",
+                    "runtime": "python3.10.6"
+                }
+            },
+            {
+                "src": "build_files.sh",
+                "use": "@vercel/static-build",
+                "config": {
+                    "distDir": "static"
+                }
+            }
+        ],
+        "routes": [
+            {
+                "src": "/(.*)",
+                "dest": "core/wsgi.py"
+            }
+        ]
+    }
+}

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'mptt',
     'rest_framework',
     'user_agents',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'middleware.deviceMiddleware.SessionMiddleware',#
+    'corsheaders.middleware.CorsMiddleware'  # ,
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -80,20 +83,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-        # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'USER': 'root',
-    #     'NAME': 'secnd_test_django',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'PASSWORD': '',
-    # },
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
 
 
 # Password validation
@@ -132,7 +122,42 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "../static",
+
+]
+STATIC_ROOT = BASE_DIR / '../assets'
+
+
+APPEND_SLASH = True
+CORS_ORIGIN_ALLOW_ALL = True  # -> Cors Header
+
+# Rest_framework
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+
+    ),
+    'DEFAULT_PERMISSINS_CLASSES': ("rest_framework.permissions.IsAuthenticated",),
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# SPECTACULAR Swagger documentation settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': ' API Documentation with Swagger UI for Ecommerce',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': True,
+    # OTHER SETTINGS
+}
