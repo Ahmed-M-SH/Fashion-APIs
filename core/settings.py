@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # internl apps
     'apps',
-    # external apps
-    'corsheaders',
-    'mptt',
-    'rest_framework',
-    'user_agents',
+    # # external apps
+    # 'corsheaders',
+    # 'mptt',
+    # 'rest_framework',
+    # 'user_agents',
 ]
 
 MIDDLEWARE = [
@@ -81,15 +82,18 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'USER': 'root',
+    #     'NAME': 'secnd_test_django',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'PASSWORD': '',
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'root',
-        'NAME': 'secnd_test_django',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'PASSWORD': '',
-
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
