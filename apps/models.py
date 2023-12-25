@@ -85,7 +85,8 @@ class Order(models.Model):
     payment_type = models.CharField(_("payment_type"), max_length=50)
     customer_name = models.CharField(_("customer name"), max_length=100)
     customer_phone = models.CharField(_("customer phone"), max_length=50)
-    total = models.DecimalField(_("total"), max_digits=12, decimal_places=2)
+    total_paid = models.DecimalField(
+        _("Total Paid"), max_digits=12, decimal_places=2)
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
 
 

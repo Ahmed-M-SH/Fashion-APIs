@@ -45,7 +45,6 @@ admin.site.register(Product)
 admin.site.register(Category, CategoryAdmin)
 
 admin.site.register([
-    Order,
     Order_item,
     Promotion,
     Promotion_category,
@@ -54,3 +53,18 @@ admin.site.register([
 ])
 
 admin.site.register(Review, ModelAdmin)
+
+
+class OrderItemInline(admin.TabularInline):
+    model = Order_item
+    extra = 1
+
+
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [OrderItemInline]
+    list_display = ('id', 'customer_name',
+                    'customer_phone', 'total_paid', 'date')
+    search_fields = ['customer_name', 'customer_phone']
+
+
+admin.site.register(Order, OrderAdmin)
