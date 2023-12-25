@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from mptt.admin import DraggableMPTTAdmin
 from .models import Product, Promotion, Cart, Category, Promotion_category, Order, Order_item, Rate, Review
 # Register your models here.
@@ -50,5 +51,6 @@ admin.site.register([
     Promotion_category,
     Cart,
     Rate,
-    Review
 ])
+
+admin.site.register(Review, ModelAdmin)

@@ -1,0 +1,68 @@
+{% load static %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+    <div class="container-fluid py-1 px-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 ">
+        <li class="breadcrumb-item text-sm ps-2"><a class="opacity-5 text-dark" href="javascript:;">لوحات القيادة</a></li>
+        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">RTL</li>
+        </ol>
+        <h6 class="font-weight-bolder mb-0">RTL</h6>
+    </nav>
+    <div class="collapse navbar-collapse mt-sm-0 mt-2 px-0" id="navbar">
+        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        <div class="input-group input-group-outline">
+            <label class="form-label">أكتب هنا...</label>
+            <input type="text" class="form-control">
+        </div>
+        </div>
+        <ul class="navbar-nav me-auto ms-0 justify-content-end">
+            {% if request.user.is_authenticated %}
+                <li class="nav-item d-flex align-items-center ms-5">
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'admin:logout' %}" class="nav-link text-body font-weight-bold px-0">
+                    {% else %}
+                    <a href="{% url 'logout' %}" class="nav-link text-body font-weight-bold px-0">
+                    {% endif %}
+                        <i class="fa fa-user me-sm-1"></i>
+                        <span class="d-sm-inline d-none">تسجيل خروج</span>
+                    </a>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'admin:password_change' %}" class="nav-link text-body font-weight-bold px-0">
+                    {% else %}
+                    <a href="{% url 'password_change' %}" class="nav-link text-body font-weight-bold px-0">
+                    {% endif %}
+                        <span class="d-sm-inline d-none">غير كلمة السر</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="nav-item d-flex align-items-center">
+                    <a href="{% url 'login' %}" class="nav-link text-body font-weight-bold px-0">
+                    <i class="fa fa-user me-sm-1"></i>
+                    <span class="d-sm-inline d-none">يسجل دخول</span>
+                    </a>
+                </li>
+            {% endif %}
+        <li class="nav-item d-xl-none pe-3 d-flex align-items-center">
+            <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+            <div class="sidenav-toggler-inner">
+                <i class="sidenav-toggler-line"></i>
+                <i class="sidenav-toggler-line"></i>
+                <i class="sidenav-toggler-line"></i>
+            </div>
+            </a>
+        </li>
+        <li class="nav-item px-3 d-flex align-items-center">
+            <a href="javascript:;" class="nav-link text-body p-0">
+            <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+            </a>
+        </li>
+        </ul>
+    </div>
+    </div>
+</nav>
+
+<!-- End Navbar -->

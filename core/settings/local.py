@@ -61,6 +61,6 @@ DATABASES = {
 
 MEDIA_URL = 'media/'
 MEDIAFILES_DIRS = [
-    BASE_DIR / "../../media",
+    BASE_DIR / "../media",
 ]
-MEDIA_ROOT = BASE_DIR / '../../media'
+MEDIA_ROOT = BASE_DIR / '../media'
