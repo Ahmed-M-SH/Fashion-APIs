@@ -82,10 +82,10 @@ class Rate(models.Model):
 class Order(models.Model):
     proof_of_payment_image = models.ImageField(
         _("proof_of_payment_image"), upload_to="proof_of_payment_image")
-    payment_type = models.CharField(_(""), max_length=50)
+    payment_type = models.CharField(_("payment_type"), max_length=50)
     customer_name = models.CharField(_("customer name"), max_length=100)
     customer_phone = models.CharField(_("customer phone"), max_length=50)
-    total = models.DecimalField(_("total"), max_digits=10, decimal_places=2)
+    total = models.DecimalField(_("total"), max_digits=12, decimal_places=2)
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
 
 
@@ -96,6 +96,6 @@ class Order_item(models.Model):
         "Order"), on_delete=models.DO_NOTHING)
     qty = models.IntegerField(_("qty"))
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
-    price = models.DecimalField(_("Price"), decimal_places=2, max_digits=8)
+    price = models.DecimalField(_("Price"), decimal_places=2, max_digits=12)
     total_price = models.DecimalField(
-        _("Total Price"), decimal_places=2, max_digits=8)
+        _("Total Price"), decimal_places=2, max_digits=12)
