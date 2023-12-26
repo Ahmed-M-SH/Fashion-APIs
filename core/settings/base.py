@@ -34,7 +34,7 @@ DEBUG = os.environ.get('DEBUG')
 
 INSTALLED_APPS = [
     # 'admin_soft.apps.AdminSoftDashboardConfig',
-    'admin_material.apps.AdminMaterialDashboardConfig',
+    # 'admin_material.apps.AdminMaterialDashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # internl apps
     'apps',
+    'dashboard',
     # # external apps
     'corsheaders',
     'mptt',
