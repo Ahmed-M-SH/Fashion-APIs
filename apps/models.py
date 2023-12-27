@@ -13,6 +13,7 @@ class Promotion(models.Model):
     end_date = models.DateTimeField(
         _("End Date"), auto_now=False, auto_now_add=False)
     discount_rate = models.FloatField(_("discount rate"))
+    is_active = models.BooleanField(_("Is Active"), default=True, blank=True)
     # class Meta:
     #     table_name = "Promotion"
 
@@ -88,6 +89,9 @@ class Order(models.Model):
     total_paid = models.DecimalField(
         _("Total Paid"), max_digits=12, decimal_places=2)
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
+    is_deleverd = models.BooleanField(
+        _("IS Deleverd?"), default=False, blank=True)
+    address = models.TextField(_("Address"), blank=True, default="")
 
 
 class Order_item(models.Model):

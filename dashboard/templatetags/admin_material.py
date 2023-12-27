@@ -8,9 +8,11 @@ from django.utils.html import format_html
 from admin_material.utils import get_menu_items
 from django.utils.safestring import mark_safe
 from django.contrib.admin.views.main import (PAGE_VAR)
+from apps.utils import all_sales
 
 register = template.Library()
-assignment_tag = register.assignment_tag if hasattr(register, 'assignment_tag') else register.simple_tag
+assignment_tag = register.assignment_tag if hasattr(
+    register, 'assignment_tag') else register.simple_tag
 
 
 @register.filter

@@ -74,12 +74,14 @@ def get_app_list(context, order=True):
     app_dict = {}
     for model, model_admin in admin_site._registry.items():
 
-        app_icon = model._meta.app_config.icon if hasattr(model._meta.app_config, 'icon') else None
+        app_icon = model._meta.app_config.icon if hasattr(
+            model._meta.app_config, 'icon') else None
         app_label = model._meta.app_label
         try:
             has_module_perms = model_admin.has_module_permission(request)
         except AttributeError:
-            has_module_perms = request.user.has_module_perms(app_label)  # Fix Django < 1.8 issue
+            has_module_perms = request.user.has_module_perms(
+                app_label)  # Fix Django < 1.8 issue
 
         if has_module_perms:
             perms = model_admin.get_model_perms(request)
@@ -96,12 +98,14 @@ def get_app_list(context, order=True):
                 }
                 if perms.get('change', False) or perms.get("view", False):
                     try:
-                        model_dict['admin_url'] = reverse('admin:%s_%s_changelist' % info, current_app=admin_site.name)
+                        model_dict['admin_url'] = reverse(
+                            'admin:%s_%s_changelist' % info, current_app=admin_site.name)
                     except NoReverseMatch:
                         pass
                 if perms.get('add', False):
                     try:
-                        model_dict['add_url'] = reverse('admin:%s_%s_add' % info, current_app=admin_site.name)
+                        model_dict['add_url'] = reverse(
+                            'admin:%s_%s_add' % info, current_app=admin_site.name)
                     except NoReverseMatch:
                         pass
                 if app_label in app_dict:
@@ -143,7 +147,8 @@ def get_app_list(context, order=True):
 def get_admin_site(context):
     try:
         current_resolver = resolve(context.get('request').path)
-        index_resolver = resolve(reverse('%s:index' % current_resolver.namespaces[0]))
+        index_resolver = resolve(
+            reverse('%s:index' % current_resolver.namespaces[0]))
 
         if hasattr(index_resolver.func, 'admin_site'):
             return index_resolver.func.admin_site
@@ -207,7 +212,8 @@ def get_model_queryset(admin_site, model, request, preserved_filters=None):
         queryset = model.objects
 
     list_display = model_admin.get_list_display(request)
-    list_display_links = model_admin.get_list_display_links(request, list_display)
+    list_display_links = model_admin.get_list_display_links(
+        request, list_display)
     list_filter = model_admin.get_list_filter(request)
     search_fields = model_admin.get_search_fields(request) \
         if hasattr(model_admin, 'get_search_fields') else model_admin.search_fields
@@ -251,7 +257,8 @@ def get_possible_language_codes():
     # making dialect part uppercase
     split = language_code.split('-', 2)
     if len(split) == 2:
-        language_code = '%s-%s' % (split[0].lower(), split[1].upper()) if split[0] != split[1] else split[0]
+        language_code = '%s-%s' % (split[0].lower(), split[1].upper()
+                                   ) if split[0] != split[1] else split[0]
 
     language_codes.append(language_code)
 
@@ -312,7 +319,8 @@ def get_menu_item_url(url, original_app_list):
 def get_menu_items(context):
     # pinned_apps = PinnedApplication.objects.filter(user=context['user'].pk).values_list('app_label', flat=True)
     pinned_apps = []
-    original_app_list = OrderedDict(map(lambda app: (app['app_label'], app), get_original_menu_items(context)))
+    original_app_list = OrderedDict(
+        map(lambda app: (app['app_label'], app), get_original_menu_items(context)))
     custom_app_list = None
     custom_app_list_deprecated = None
 
@@ -353,7 +361,8 @@ def get_menu_items(context):
                 item['url_blank'] = data['url_blank']
 
             if 'permissions' in data:
-                item['has_perms'] = item.get('has_perms', True) and context['user'].has_perms(data['permissions'])
+                item['has_perms'] = item.get(
+                    'has_perms', True) and context['user'].has_perms(data['permissions'])
 
             return item
 
@@ -362,8 +371,10 @@ def get_menu_items(context):
 
             if not app_label:
                 if 'label' not in data:
-                    raise Exception('Custom menu items should at least have \'label\' or \'app_label\' key')
-                app_label = 'custom_%s' % slugify(data['label'], allow_unicode=True)
+                    raise Exception(
+                        'Custom menu items should at least have \'label\' or \'app_label\' key')
+                app_label = 'custom_%s' % slugify(
+                    data['label'], allow_unicode=True)
 
             if app_label in original_app_list:
                 item = original_app_list[app_label].copy()
@@ -374,7 +385,8 @@ def get_menu_items(context):
                 item['label'] = data['label']
 
             if 'items' in data:
-                item['items'] = list(map(lambda x: get_menu_item_app_model(app_label, x), data['items']))
+                item['items'] = list(
+                    map(lambda x: get_menu_item_app_model(app_label, x), data['items']))
 
             if 'url' in data:
                 item['url'] = get_menu_item_url(data['url'], original_app_list)
@@ -383,7 +395,8 @@ def get_menu_items(context):
                 item['url_blank'] = data['url_blank']
 
             if 'permissions' in data:
-                item['has_perms'] = item.get('has_perms', True) and context['user'].has_perms(data['permissions'])
+                item['has_perms'] = item.get(
+                    'has_perms', True) and context['user'].has_perms(data['permissions'])
 
             item['pinned'] = item['app_label'] in pinned_apps
 
@@ -412,7 +425,8 @@ def get_menu_items(context):
 
         if isinstance(custom_app_list_deprecated, dict):
             admin_site = get_admin_site(context)
-            custom_app_list_deprecated = custom_app_list_deprecated.get(admin_site.name, [])
+            custom_app_list_deprecated = custom_app_list_deprecated.get(
+                admin_site.name, [])
 
         for item in custom_app_list_deprecated:
             app_label, models = item
