@@ -7,20 +7,21 @@ from .models import Order, Order_item  # Import your order models here
 
 def generate_pdf(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
-    order_items = Order_item.objects.filter(order=order)
+    order_items = Order_item.objects.filter(order_id=order.id)
 
     context = {
         'order': order,
         'order_items': order_items,
     }
 
-    template_path = 'your_template.html'  # Change this to the path of your template
+    # Change this to the path of your template
+    template_path = 'pages/invoice_pdf.html'
     template = get_template(template_path)
     html = template.render(context)
 
     # Create a PDF response
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="Invoice_{order.order_receiver_name}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="Invoice_{order.customer_name}.pdf"'
 
     # Generate PDF from HTML
     pisa_status = pisa.CreatePDF(html, dest=response)
