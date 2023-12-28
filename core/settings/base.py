@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'user_agents',
     'drf_spectacular',
+    'schema_graph',
 ]
 
 MIDDLEWARE = [

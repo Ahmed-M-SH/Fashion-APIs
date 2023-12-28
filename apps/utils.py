@@ -1,7 +1,8 @@
 from datetime import timezone
 from django.db.models import Sum
 from .models import Order_item, Order, Product, Promotion, Category, User
-import datetime
+# import datetime
+from django.utils import timezone
 
 
 def all_sales():
@@ -17,8 +18,8 @@ def all_sales():
 
 
 def last_day_sales():
-    end_date = datetime.datetime.now()
-    start_date = end_date - datetime.timedelta(days=1)
+    end_date = timezone.now()
+    start_date = end_date - timezone.timedelta(days=1)
 
     # Retrieve orders and order items for the last day
     orders_last_day = Order.objects.filter(date__range=(start_date, end_date))
@@ -62,3 +63,43 @@ def total_orders():
 
 def total_orders_deleverd():
     return Order.objects.filter(is_deleverd=False).count()
+
+
+def get_all_children(obj: Category):
+    """Function to get all children Automatic
+
+    Args:
+        obj (Category): 
+
+    Returns:
+        Categor: List of children from the given object 
+    """
+    result = {
+        'id': obj.id,
+        'name': obj.name,
+        "level": obj.level,
+        'children': []
+    }
+
+    if Category.get_children(obj).exists():
+        children = []
+        for item in Category.get_children(obj):
+            children.append(get_all_children(item))
+        result['children'] = children
+        # dataLoop[f'level_{obj.level}'] = get_all_children(item)
+    # else:s
+    #     t['sub_category'] = Category.get_children(obj).values()
+    # result[str(obj.name)]
+    # return result
+    # result = {
+    #     'id': obj.id,
+    #     'name': obj.name,
+    #     'level': obj.level
+    # }
+
+    # # cat = obj.get_children()
+    # if Category.objects.filter(parent=obj, level=(obj.level+1)).exists():
+    #     for objects in Category.objects.filter(parent=obj, ):
+    #         result['category'] = get_all_children(objects)
+
+    return result

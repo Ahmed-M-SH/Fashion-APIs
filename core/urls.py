@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from apps.views import generate_pdf
-
+from schema_graph.views import Schema
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +26,7 @@ urlpatterns = [
     # path('', include('admin_material.urls')),
     path('', include('dashboard.urls')),
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
+    path('schema/', Schema.as_view())
 
 
 ]
