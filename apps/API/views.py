@@ -37,5 +37,12 @@ class ProductView(viewsets.ModelViewSet):
     serializer_class = serializers.ProductSerializer
     pagination_class = StandardResultsSetPagination
 
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return serializers.SingleProductSerializer
+        else:
+            return serializers.ProductSerializer
+        return super().get_serializer_class()
+
     def get_serializer_context(self):
         return {'user': self.request.user} if self.request.user.is_authenticated else {}
