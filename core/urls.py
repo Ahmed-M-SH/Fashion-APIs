@@ -26,7 +26,8 @@ urlpatterns = [
     # path('', include('admin_material.urls')),
     path('', include('dashboard.urls')),
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
-    path('schema/', Schema.as_view())
+    path('schema/', Schema.as_view()),
+    path('api/', include('apps.urls')),
 
 
 ]

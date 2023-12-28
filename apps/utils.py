@@ -62,7 +62,7 @@ def total_orders():
 
 
 def total_orders_deleverd():
-    return Order.objects.filter(is_deleverd=False).count()
+    return Order.objects.filter(is_delivered=False).count()
 
 
 def get_all_children(obj: Category):

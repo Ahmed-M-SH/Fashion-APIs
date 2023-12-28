@@ -1,8 +1,109 @@
+from .models import Product, Promotion, Cart, Category, Promotion_category, Order, Order_item, Rate, Review, User
+from django import forms
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin
+from django.utils.translation import gettext_lazy as _
+# from django.contrib.auth.admin import UserAdmin
 from mptt.admin import DraggableMPTTAdmin
-from .models import Product, Promotion, Cart, Category, Promotion_category, Order, Order_item, Rate, Review
-# Register your models here.
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import (
+    AdminPasswordChangeForm,
+    UserChangeForm,
+    UserCreationForm,
+    ReadOnlyPasswordHashField,
+    UsernameField,
+)  # Register your models here.
+
+
+class CustomUserChangeForm(forms.ModelForm):
+    """
+    Custom UserChangForm For AdminUser registertions
+    """
+    password = ReadOnlyPasswordHashField(
+        label=_("Password"),
+        help_text=_(
+            "Raw passwords are not stored, so there is no way to see this "
+            "user’s password, but you can change the password using "
+            '<a href="{}">this form</a>.'
+        ),
+    )
+
+    class Meta:
+        model = User
+        fields = ("name", "phone_number", "email", "is_active", "is_staff",
+                  "is_superuser",  "groups", "username",)
+        # field_classes = {"email": forms.EmailField}
+
+
+class CustomUserCreationForm(UserCreationForm):
+    """
+        Custom UserChangForm For AdminUser registertions
+    """
+    class Meta:
+        model = User
+        fields = ("name", "phone_number", "email", "is_active", "is_staff",
+                  "is_superuser",  "groups", "username",)
+        # field_classes = {'email': forms.EmailField}
+
+
+class CustomAdminUser(UserAdmin):
+    """
+        Custom CustomUSerAdmin For User registertions to add grops and Custom Disgan
+
+    """
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        (_("Personal info"), {
+         "fields": ("name", "phone_number", "email", 'image')}),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                    "is_deleted"
+                ),
+            },
+        ),
+        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "password1", "password2", 'name', 'phone_number'),
+            },
+        ),
+    )
+    form = CustomUserChangeForm
+    # add_form = CustomUserCreationForm
+    change_password_form = AdminPasswordChangeForm
+    list_display = ("username", "email", "name",
+                    "is_staff", 'is_deleted', 'is_active')
+    list_filter = ("is_staff", "is_superuser",
+                   "is_active", "groups",  'is_deleted', 'is_active')
+    search_fields = ("username",
+                     "phone_number", "name", "email")
+    ordering = ("id",)
+    filter_horizontal = (
+        "groups",
+        "user_permissions",
+    )
+
+    def get_queryset(self, request):
+
+        qs = self.model._default_manager.get_queryset()
+        # TODO: this should be handled by some parameter to the ChangeList.
+        ordering = self.get_ordering(request)
+        if ordering:
+            qs = qs.all()
+        return qs
+
+
+admin.site.register(User, CustomAdminUser)
 
 
 class CategoryAdmin(DraggableMPTTAdmin):
@@ -52,7 +153,7 @@ admin.site.register([
     Rate,
 ])
 
-admin.site.register(Review, ModelAdmin)
+admin.site.register(Review, admin.ModelAdmin)
 
 
 class OrderItemInline(admin.TabularInline):

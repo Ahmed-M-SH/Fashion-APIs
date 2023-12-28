@@ -3,8 +3,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-import datetime
-import uuid
 from django.utils import timezone
 
 
@@ -169,7 +167,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         raise self.DoesNotExist()
 
     def __str__(self) -> str:
-        return f" {self.pk} |{self.email}:{self.name} :{self.auth_provider}"
+        return f" {self.pk} |{self.email}:{self.name}"
 
     # Start Method for Class
 
@@ -207,8 +205,9 @@ class Promotion(models.Model):
         _("End Date"), auto_now=False, auto_now_add=False)
     discount_rate = models.FloatField(_("discount rate"))
     is_active = models.BooleanField(_("Is Active"), default=True, blank=True)
-    # class Meta:
-    #     table_name = "Promotion"
+
+    class Meta:
+        db_table = 'Promotion'
 
 
 class Category(MPTTModel):
@@ -225,16 +224,22 @@ class Category(MPTTModel):
     def __str__(self):
         return f"name: {self.name} parent {self.parent} id {self.id} "
 
+    class Meta:
+        db_table = 'Category'
+
 
 class Promotion_category(models.Model):
     promotion = models.ForeignKey(
-        Promotion, verbose_name=_("Promotion"), on_delete=models.CASCADE)
+        Promotion, verbose_name=_("Promotion"), on_delete=models.CASCADE, related_name='promotion_category')
     category = models.ForeignKey(Category, verbose_name=_(
-        "category"), on_delete=models.CASCADE)
+        "category"), on_delete=models.CASCADE, related_name='promotion_category')
     created_date = models.DateTimeField(
         _("created at"), auto_now=False, auto_now_add=True)
     updated_date = models.DateTimeField(
         _("Updated at"), auto_now=True, auto_now_add=False)
+
+    class Meta:
+        db_table = 'Promotion_category'
 
 
 class Product(models.Model):
@@ -245,37 +250,51 @@ class Product(models.Model):
     description = models.TextField()
     image = models.ImageField(_("Image"), upload_to="products_image",)
 
+    class Meta:
+        db_table = 'Product'
+
 
 class Review(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
-        "User"), on_delete=models.CASCADE)
+        "User"), on_delete=models.CASCADE, related_name='review')
     product = models.ForeignKey(Product, verbose_name=_(
-        "Product"), on_delete=models.CASCADE)
+        "Product"), on_delete=models.CASCADE, related_name='review')
     review_date = models.DateTimeField(auto_now_add=True)
     review_text = models.TextField()
+
+    class Meta:
+        db_table = 'Review'
 
 
 class Cart(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
-        "User"), on_delete=models.CASCADE)
+        "User"), on_delete=models.CASCADE, related_name='cart')
     product = models.ForeignKey(Product, verbose_name=_(
-        "Product"), on_delete=models.CASCADE)
+        "Product"), on_delete=models.CASCADE, related_name='cart')
     qty = models.IntegerField(_("qty"))
     date = models.DateTimeField(auto_now=False, auto_now_add=True)
+
+    class Meta:
+        db_table = 'Cart'
 
 
 class Rate(models.Model):
     rating_date = models.DateTimeField(auto_now=False, auto_now_add=True)
     rating_no = models.FloatField(_("rating_no"), max_length=5)
     user = models.ForeignKey(User, verbose_name=_(
-        "User"), on_delete=models.CASCADE)
+        "User"), on_delete=models.CASCADE, related_name='rate')
     product = models.ForeignKey(Product, verbose_name=_(
-        "Product"), on_delete=models.CASCADE)
+        "Product"), on_delete=models.CASCADE, related_name='rate')
+
+    class Meta:
+        db_table = 'Rate'
 
 
 class Order(models.Model):
+    user = models.ForeignKey(User, verbose_name=_(
+        "User"), on_delete=models.DO_NOTHING, related_name='order')
     proof_of_payment_image = models.ImageField(
-        _("proof_of_payment_image"), upload_to="proof_of_payment_image")
+        _("proof_of_payment_image"), upload_to="proof_of_payment_image", blank=True, null=True)
     payment_type = models.CharField(_("payment_type"), max_length=50)
     customer_name = models.CharField(_("customer name"), max_length=100)
     customer_phone = models.CharField(_("customer phone"), max_length=50)
@@ -286,19 +305,25 @@ class Order(models.Model):
         _("IS Delivered?"), default=False, blank=True)
     address = models.TextField(_("Address"), blank=True, default="")
 
+    class Meta:
+        db_table = 'Order'
+
 
 class Order_item(models.Model):
     product = models.ForeignKey(Product, verbose_name=_(
-        "Products"), on_delete=models.DO_NOTHING)
-    order_id = models.ForeignKey(Order, verbose_name=_(
-        "Order"), on_delete=models.DO_NOTHING)
+        "Products"), on_delete=models.DO_NOTHING, related_name="order_item")
+    order = models.ForeignKey(Order, verbose_name=_(
+        "Order"), on_delete=models.DO_NOTHING, related_name="order_item")
     qty = models.IntegerField(_("qty"))
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
     price = models.DecimalField(_("Price"), decimal_places=2, max_digits=12)
     total_price = models.DecimalField(
-        _("Total Price"), decimal_places=2, max_digits=12, blank=True, editable=False)
+        _("Total Price"), decimal_places=2, max_digits=12, blank=True, editable=False,)
 
     def save(self, *args, **kwargs):
         # Calculate the total price based on the quantity and price of the product
         self.total_price = self.qty * self.price
         super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'Order_item'

@@ -30,7 +30,7 @@
                     <th>Price</th>
                     <th>Total Price</th>
                 </tr>
-                {% for item in order.order_item_set.all %}
+                {% for item in order.order_item.all %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ item.product.name }}</td>
