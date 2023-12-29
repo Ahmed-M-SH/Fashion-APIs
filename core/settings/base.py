@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'mptt',
     'rest_framework',
+    'rest_framework.authtoken',
+
     'user_agents',
     'drf_spectacular',
     'schema_graph',
