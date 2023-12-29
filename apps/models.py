@@ -264,6 +264,18 @@ class Review(models.Model):
 
     class Meta:
         db_table = 'Review'
+        unique_together = ("product", "user")
+
+
+class Review_Likes(models.Model):
+    user = models.ForeignKey(User, verbose_name=_(
+        "User"), on_delete=models.CASCADE, related_name='review_likes')
+    review = models.ForeignKey(Review, verbose_name=_(
+        "Review"), on_delete=models.CASCADE, related_name='review_likes')
+
+    class Meta:
+        db_table = 'Review_Likes'
+        unique_together = ("review", "user")
 
 
 class Cart(models.Model):
@@ -276,6 +288,25 @@ class Cart(models.Model):
 
     class Meta:
         db_table = 'Cart'
+        unique_together = ("product", "user")
+
+
+class Favorite(models.Model):
+    """
+    Favorite model <ManyTOMany> betowen User and Prodect
+    """
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='favorites')
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='favorites')
+    time_created = models.DateField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"Product- {self.product.id } - User- {self.user.id}"
+
+    class Meta:
+        db_table = 'Favorite'
+        unique_together = ("product", "user")
 
 
 class Rate(models.Model):
@@ -288,6 +319,7 @@ class Rate(models.Model):
 
     class Meta:
         db_table = 'Rate'
+        unique_together = ("product", "user")
 
 
 class Order(models.Model):
