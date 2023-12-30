@@ -1,4 +1,4 @@
-from apps.models import Product, Promotion, Cart, Rate, Review, Category, Promotion_category, User
+from apps.models import Product, Promotion, Cart, Rate, Review, Category, Promotion_category, Review_Likes, User
 from rest_framework import serializers
 from ..orders.serializers import Order_itemSerializers, OrderSerializers
 
@@ -34,6 +34,13 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializers(serializers.ModelSerializer):
+    user = serializers.IntegerField(read_only=True)
+
+    def validate(self, attrs):
+        # self.user = self.context.get('user').id
+        attrs['user'] = self.context.get('user')
+        return super().validate(attrs)
+
     class Meta:
         model = Review
         fields = '__all__'
@@ -49,6 +56,7 @@ class ReviewSerializers(serializers.ModelSerializer):
             r = instance.user.rate.get(
                 product=instance.product).rating_no
         date = {
+            'id': instance.id,
             'user': f"{instance.user.get_full_name()}",
             'review_date': instance.review_date,
             'review_text': instance.review_text,
@@ -108,4 +116,22 @@ class SingleProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class CreateReviewserializers:
+class ReviewLikeSerializers(serializers.ModelSerializer):
+    user = serializers.IntegerField(read_only=True)
+
+    def validate(self, attrs):
+        # self.user = self.context.get('user').id
+        attrs['user'] = self.context.get('user')
+        return super().validate(attrs)
+
+    class Meta:
+        model = Review_Likes
+        fields = '__all__'
+
+
+class DeleteReviewLikeSerializers:
+    user = serializers.IntegerField
+
+    class Meta:
+        model = Review_Likes
+        fields = ('user', 'review')
