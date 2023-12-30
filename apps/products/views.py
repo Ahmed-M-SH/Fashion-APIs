@@ -5,7 +5,7 @@ from rest_framework import filters
 from ..pagination import StandardResultsSetPagination
 from rest_framework.views import Response
 
-from apps.models import Product, Review, Review_Likes
+from apps.models import Favorite, Product, Review, Review_Likes
 from . import serializers
 
 # Create your views here.

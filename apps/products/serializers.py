@@ -1,4 +1,4 @@
-from apps.models import Product, Promotion, Cart, Rate, Review, Category, Promotion_category, Review_Likes, User
+from apps.models import Favorite, Product, Promotion, Cart, Rate, Review, Category, Promotion_category, Review_Likes, User
 from rest_framework import serializers
 from ..orders.serializers import Order_itemSerializers, OrderSerializers
 
