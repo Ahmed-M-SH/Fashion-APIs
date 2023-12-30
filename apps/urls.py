@@ -6,6 +6,7 @@ urlpatterns = [
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
     path('auth/', include('apps.authentication.urls')),
     path('favorite/', include('apps.favorite.urls')),
+    path('user/',include('apps.user.urls')),
 
     # path('')
 ]
