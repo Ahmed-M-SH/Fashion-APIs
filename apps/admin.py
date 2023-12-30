@@ -1,4 +1,4 @@
-from .models import Favorite, Product, Promotion, Cart, Category, Promotion_category, Order, Order_item, Rate, Review, User, Review_Likes
+from .models import City, Currency, Favorite, Product, Promotion, Cart, Category, Promotion_category, Order, Order_item, Rate, Review, User, Review_Likes
 from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
@@ -152,7 +152,9 @@ admin.site.register([
     Cart,
     Rate,
     Review_Likes,
-    Favorite
+    Favorite,
+    City,
+    Currency
 
 ])
 

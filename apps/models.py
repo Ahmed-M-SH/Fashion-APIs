@@ -197,6 +197,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 # Create your models here.
 
+class Notification(models.Model):
+    title = models.CharField(_("Title"), max_length=50)
+    text = models.TextField(default='')
+    # type = models.CharField(max_length=30, default='')
+    # user = models.ManyToManyField(User, through='User_notification',)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='notification', )
+    time_created = models.DateTimeField(
+        _("Time Created"), auto_now=False, auto_now_add=True)
+    is_readed = models.BooleanField(
+        _("Read Status"), editable=False, default=False)
+
+    class Meta:
+        db_table = 'Notification'
+
+
 class Promotion(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -322,20 +338,44 @@ class Rate(models.Model):
         unique_together = ("product", "user")
 
 
+class City(models.Model):
+    name = models.CharField(_("City Name"), max_length=50)
+
+    class Meta:
+        db_table = 'City'
+
+
+class Currency (models.Model):
+    currency_name = models.CharField(_("Currency Name"), max_length=50)
+    conversion_factor = models.DecimalField(
+        _("Conversion Factor (معامل التحويل)"), max_digits=12, decimal_places=2)
+
+    class Meta:
+        db_table = 'Currency'
+
+
 class Order(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
         "User"), on_delete=models.DO_NOTHING, related_name='order')
+    city = models.ForeignKey(City, verbose_name=_(
+        "City"), on_delete=models.DO_NOTHING, related_name='order')
+    currency = models.ForeignKey(Currency, verbose_name=_(
+        "Currency"), on_delete=models.DO_NOTHING, related_name='order')
     proof_of_payment_image = models.ImageField(
         _("proof_of_payment_image"), upload_to="proof_of_payment_image", blank=True, null=True)
     payment_type = models.CharField(_("payment_type"), max_length=50)
     customer_name = models.CharField(_("customer name"), max_length=100)
-    customer_phone = models.CharField(_("customer phone"), max_length=50)
+    customer_phone = models.CharField(
+        _("customer phone number"), max_length=50)
+    customer_phone2 = models.CharField(
+        _("Alternative phone number"), max_length=50, null=True, blank=True)
     total_paid = models.DecimalField(
         _("Total Paid"), max_digits=12, decimal_places=2)
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
     is_delivered = models.BooleanField(
         _("IS Delivered?"), default=False, blank=True)
     address = models.TextField(_("Address"), blank=True, default="")
+    is_proof = models.BooleanField(_("Proofit status"), default=False)
 
     class Meta:
         db_table = 'Order'

@@ -9,7 +9,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     # age = serializers.IntegerField(allow_blank=True, )
     phone_number = serializers.CharField(allow_blank=True, )
     username = serializers.CharField(allow_blank=True, )
-    register_data = serializers.CharField(allow_blank=True, )
+    register_data = serializers.CharField(allow_blank=True, read_only=True)
     name = serializers.CharField(allow_blank=True, )
 
     class Meta:
@@ -20,11 +20,20 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     # user_address = UserAddressSerilazer(many=True, read_only=True)
+    previous_ordersast = serializers.SerializerMethodField(read_only=True)
+    being_prepared_ordersast = serializers.SerializerMethodField(
+        read_only=True)
+
+    def get_being_prepared_ordersast(self, obj):
+        return obj.order.filter(is_delivered=False, is_proof=True).count()
+
+    def get_previous_ordersast(self, obj):
+        return obj.order.filter(is_delivered=True).count()
 
     class Meta:
         model = User
         fields = ['id', 'email', 'phone_number',
-                  'username', 'name', 'register_data', 'image']
+                  'username', 'name', 'register_data', 'image', 'previous_ordersast', 'being_prepared_ordersast']
 
 
 class UserSerializer(serializers.ModelSerializer):
