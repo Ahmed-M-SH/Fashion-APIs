@@ -27,7 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%m2=vfc6yd@^m_qmg1@bubht_kg!8j)g!g_8^ex1*za+=u@si)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')
+# DEBUG = os.environ.get('DEBUG')
+DEBUG = True
 
 AUTH_USER_MODEL = 'apps.User'
 
@@ -140,7 +141,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / '../assets'
 
 
-APPEND_SLASH = True
+APPEND_SLASH = False
 CORS_ORIGIN_ALLOW_ALL = True  # -> Cors Header
 
 # Rest_framework

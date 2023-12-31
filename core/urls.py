@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from apps.views import generate_pdf
 from schema_graph.views import Schema
-
+from django.conf.urls.static import static
+from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', include('admin_soft.urls')),
@@ -28,6 +29,4 @@ urlpatterns = [
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
     path('schema/', Schema.as_view()),
     path('api/', include('apps.urls')),
-
-
-]
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

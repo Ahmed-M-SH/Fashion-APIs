@@ -14,6 +14,6 @@ class CategoryView(APIView):
 
         data = Category.objects.filter(parent=None)
         ser = self.serializer_class(instance=data, many=True,)
-        return Response({
-            'data': ser.data
-        })
+        return Response(
+            ser.data
+        )

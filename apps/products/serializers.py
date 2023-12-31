@@ -55,10 +55,12 @@ class ReviewSerializers(serializers.ModelSerializer):
         if instance.user.rate.filter(product=instance.product).exists():
             r = instance.user.rate.get(
                 product=instance.product).rating_no
+        formatted_review_date = instance.review_date.strftime('%Y-%m-%d %H:%M')
+
         date = {
             'id': instance.id,
             'user': f"{instance.user.get_full_name()}",
-            'review_date': instance.review_date,
+            'review_date': formatted_review_date,
             'review_text': instance.review_text,
             'rating': r,
             'profile': image,
