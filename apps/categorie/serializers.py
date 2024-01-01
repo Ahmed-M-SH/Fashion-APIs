@@ -12,25 +12,27 @@ class CategorySerializer(serializers.ModelSerializer):
     sub_category = serializers.SerializerMethodField(read_only=True)
 
     def get_sub_category(self, obj):
-        """Get All Three Levels in Category (Main Category - Category - Sub Category)
+        """
+        Get all three levels in Category (Main Category - Category - Sub Category)
 
         Args:
-            Object -> Category
-        Returns:
-            List of Categorys start with Main , end with Sub_category
-        """
-        result = {}
-        data = Category.objects.filter(parent=obj)
-        for item in data:
-            t = {
-                'id': item.id,
-                'name': item.name,
-                "level": item.level,
-                'sub_category': Category.get_children(item).values(),
+            obj (Category): Object representing the category.
 
+        Returns:
+            list: List of dictionaries containing information about subcategories.
+        """
+        result = []
+        sub_categories = Category.objects.filter(parent=obj)
+
+        for sub_category in sub_categories:
+            sub_category_info = {
+                'id': sub_category.id,
+                'name': sub_category.name,
+                'level': sub_category.level,
+                'sub_category': Category.get_children(sub_category).values(),
             }
-            result[str(item.name)] = t
-        # result = get_all_children(obj)
+            result.append(sub_category_info)
+
         return result
 
     class Meta:

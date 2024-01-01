@@ -32,6 +32,7 @@ DEBUG = True
 
 AUTH_USER_MODEL = 'apps.User'
 
+DEFAULT_CHARSET = 'utf-8'
 
 # Application definition
 
@@ -156,6 +157,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSINS_CLASSES': ("rest_framework.permissions.IsAuthenticated",),
 
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
+    'DEFAULT_CONTENT_NEGOTIATION_CLASS':
+        'rest_framework.negotiation.DefaultContentNegotiation',
 
 }
 
