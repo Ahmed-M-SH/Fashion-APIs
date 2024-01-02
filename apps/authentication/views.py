@@ -57,10 +57,8 @@ class ReigsterView(CreateAPIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response({
-                'data': 'User created Suscceful',
-                'user': serializer.data
-            }, status=status.HTTP_200_OK)
+            return Response(
+                serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({
                 'error': serializer.errors

@@ -6,6 +6,8 @@ from ..pagination import StandardResultsSetPagination
 from rest_framework.views import Response
 
 from apps.models import Favorite, Product, Review, Review_Likes
+from django_filters.rest_framework import DjangoFilterBackend
+
 from . import serializers
 
 # Create your views here.
@@ -14,7 +16,10 @@ from . import serializers
 class ProductView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     # serializer_class = ProductSerializer
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter,]
+
+    search_fields = ['name', 'price']
+    filterset_fields = ['name', 'price']
     ordering_fields = '__all__'
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
