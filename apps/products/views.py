@@ -17,7 +17,6 @@ class ProductView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     # serializer_class = ProductSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter,]
-
     search_fields = ['name', 'price']
     filterset_fields = ['name', 'price']
     ordering_fields = '__all__'

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.models import User
+from apps.models import Notification, User
 # from apps.address.serializer import UserAddressSerilazer
 
 
@@ -53,3 +53,10 @@ class UserSerializer(serializers.ModelSerializer):
             instence.set_password(password)
         instence.save()
         return instence
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Notification
+        fields = "__all__"

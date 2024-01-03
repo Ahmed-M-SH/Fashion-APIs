@@ -1,6 +1,7 @@
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from apps.models import User
-from .serializer import UpdateUserSerializer, UserProfileSerializer, UserSerializer
+from apps.models import Notification, User
+from .serializer import NotificationSerializer, UpdateUserSerializer, UserProfileSerializer, UserSerializer
 from rest_framework import viewsets
 from rest_framework import filters
 from rest_framework.response import Response
@@ -91,3 +92,19 @@ class UserProfileViewset(viewsets.ModelViewSet):
         return User.objects.filter(is_deleted=False, is_active=True, id=self.request.user.id)
 
 # End User Using calss BaseViewsets
+
+
+class NotificationView(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.notification.all()
+
+    @action(detail=False, methods=['get'])
+    def unread_notification(self, request, *args, **kwargs):
+        user = request.user
+        user: User
+        notification = user.notification.filter(is_readed=False)
+        ser = self.serializer_class(notification, many=True)
+        return Response(ser.data)

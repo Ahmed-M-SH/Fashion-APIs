@@ -1,5 +1,5 @@
 from django.db import models
-from .models import City, Currency, Favorite, Image, Product, Promotion, Cart, Category,  Order, Order_item, Promotion_product, Rate, Review, User, Review_Likes
+from .models import City, Currency, Favorite, Image, Notification, Product, Promotion, Cart, Category,  Order, Order_item, Promotion_product, Rate, Review, User, Review_Likes
 from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
@@ -158,6 +158,7 @@ admin.site.register([
     City,
     Currency,
     # Image
+    Notification
 
 ])
 

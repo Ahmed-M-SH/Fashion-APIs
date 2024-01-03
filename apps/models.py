@@ -1,3 +1,7 @@
+from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from django.db import models
 # from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
@@ -181,7 +185,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def add_favorite(self, item_id: int):
         try:
-            data = self.favorites.get_or_create(item_id=item_id)
+            data = self.favorites.get_or_create(product_id=item_id)
             return data[0]
         except:
             return False
@@ -412,3 +416,25 @@ class Order_item(models.Model):
 
     class Meta:
         db_table = 'Order_item'
+
+
+# ------------------------- Signals ------------------
+@receiver(post_save, sender=Promotion_product)
+def send_promotion_notification(sender, instance, created, **kwargs):
+    """
+    Signal handler to send notifications when a promotion is added for a product.
+    """
+    if created:
+        try:
+            users = User.objects.all()
+            notification_text = f"New promotion '{instance.promotion.name}' added for product '{instance.product.name}'."
+
+            with transaction.atomic():
+                for user in users:
+                    Notification.objects.create(
+                        title="New Promotion Added",
+                        text=notification_text,
+                        user=user,
+                    )
+        except ObjectDoesNotExist:
+            pass
