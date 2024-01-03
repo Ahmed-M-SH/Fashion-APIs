@@ -14,6 +14,7 @@ urlpatterns = [
     # path('<int:pk>/delete/', views.UserDeleteView.as_view()),
 
     # ================================
+    path('cart/', include("apps.cart.urls")),
     path('create/', views.UserViewsets.as_view({'post': 'create'})),
     path("profile/",
          views.UserProfileViewset.as_view({'get': 'list'}), name="profile"),

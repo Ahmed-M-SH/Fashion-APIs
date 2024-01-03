@@ -20,6 +20,9 @@ from apps.views import generate_pdf
 from schema_graph.views import Schema
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', include('admin_soft.urls')),
@@ -28,5 +31,10 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
     path('schema/', Schema.as_view()),
-    path('api/', include('apps.urls')),
+    path('api/', include('apps.urls')), path('api/schema/',
+                                             SpectacularAPIView.as_view(), name='schema'),
+    path('api/doc/',
+         SpectacularSwaggerView.as_view(url_name='schema'), name='api_doc'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += staticfiles_urlpatterns()

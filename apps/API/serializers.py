@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.models import Order, Order_item, Product, Promotion, Cart, Rate, Review, Category, Promotion_category, User
+from apps.models import Order, Order_item, Product, Promotion, Cart, Rate, Review, Category,  User
 
 
 class Order_itemSerializers(serializers.ModelSerializer):

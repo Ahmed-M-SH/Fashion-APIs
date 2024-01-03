@@ -3,5 +3,1460 @@ info:
   title: ' API Documentation with Swagger UI for Ecommerce'
   version: 1.0.0
   description: Your project description
-paths: {}
-components: {}
+paths:
+  /api/auth/login/:
+    post:
+      operationId: api_auth_login_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/auth/sginup/:
+    post:
+      operationId: api_auth_sginup_create
+      description: |-
+        Reigster User View to signup after verify the ``email`` or ``phone number`` (just email for new).
+        Returns:
+        - in_Success:
+            - data: (``string``) -> message from server.
+            - user: (``User``) -> data of user after created.
+            - status_code : 200
+        - in_Fail:
+            - error: (``string``) -> Error Message.
+            - status: 401 when come bafore verify the ``email`` or ``phone_number``.
+            - status: 400 when data isn't correct or somthing go to by wrong.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/categorys/:
+    get:
+      operationId: api_categorys_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/favorite/:
+    get:
+      operationId: api_favorite_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FavoriteSerializers'
+          description: ''
+  /api/favorite/{product_id}/delete/:
+    delete:
+      operationId: api_favorite_delete_destroy
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/favorite/create/:
+    post:
+      operationId: api_favorite_create_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFavoriteSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateFavoriteSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateFavoriteSerializers'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFavoriteSerializers'
+          description: ''
+  /api/orders/:
+    get:
+      operationId: api_orders_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrderSerializersList'
+          description: ''
+  /api/orders/{id}/:
+    get:
+      operationId: api_orders_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+  /api/products/:
+    get:
+      operationId: api_products_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductList'
+          description: ''
+  /api/products/{id}/:
+    get:
+      operationId: api_products_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleProduct'
+          description: ''
+  /api/products/create/:
+    post:
+      operationId: api_products_create_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/products/review/create/:
+    post:
+      operationId: api_products_review_create_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReviewSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewSerializers'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewSerializers'
+          description: ''
+  /api/products/reviewlike/{review_id}/delete/:
+    delete:
+      operationId: api_products_reviewlike_delete_destroy
+      parameters:
+      - in: path
+        name: review_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/products/reviewlike/create/:
+    post:
+      operationId: api_products_reviewlike_create_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewLikeSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReviewLikeSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewLikeSerializers'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewLikeSerializers'
+          description: ''
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/user/{id}/:
+    get:
+      operationId: api_user_retrieve
+      description: |-
+        _summary_
+
+        Args:
+            viewsets (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/user/{id}/delete/:
+    delete:
+      operationId: api_user_delete_destroy
+      description: |-
+        _summary_
+
+        Args:
+            viewsets (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/user/cart/{id}/delete/:
+    delete:
+      operationId: api_user_cart_delete_destroy
+      description: |-
+        _summary_
+
+        Args:
+            viewsets (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/user/cart/{id}/update-count/:
+    post:
+      operationId: api_user_cart_update_count_create
+      description: |-
+        _summary_
+        Args:
+            request (_type_): _description_
+        Returns:
+            _type_: _description_
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/user/cart/add/:
+    post:
+      operationId: api_user_cart_add_create
+      description: |-
+        _summary_
+        Args:
+            request (_type_): _description_
+        Returns:
+            _type_: _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/user/cart/add-list/:
+    post:
+      operationId: api_user_cart_add_list_create
+      description: |-
+        _summary_
+        Args:
+            request (Request): _description_
+        Returns:
+            _type_: _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/user/cart/delete-all/:
+    post:
+      operationId: api_user_cart_delete_all_create
+      description: |-
+        _summary_
+
+        Args:
+            request (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/user/cart/delete-list/:
+    post:
+      operationId: api_user_cart_delete_list_create
+      description: |-
+        _summary_
+
+        Args:
+            request (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/user/create/:
+    post:
+      operationId: api_user_create_create
+      description: |-
+        _summary_
+
+        Args:
+            viewsets (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/user/profile/:
+    get:
+      operationId: api_user_profile_list
+      description: |-
+        _summary_
+
+        Args:
+            viewsets (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/user/profile/update/:
+    put:
+      operationId: api_user_profile_update_update
+      description: |-
+        _summary_
+
+        Args:
+            viewsets (_type_): _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUser'
+          description: ''
+    patch:
+      operationId: api_user_profile_update_partial_update
+      description: |-
+        _summary_
+
+        Args:
+            viewsets (_type_): _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateUser'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUser'
+          description: ''
+components:
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - password
+      - token
+      - username
+    Cart:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        qty:
+          type: integer
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date
+      - product_id
+      - qty
+    Category:
+      type: object
+      description: |-
+        Category Serializers Class
+        Args:
+            serializers (Category): Get, Add , Delete, Update Category for All Levels
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        sub_category:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        category_image:
+          type: string
+          format: uri
+        lft:
+          type: integer
+          readOnly: true
+        rght:
+          type: integer
+          readOnly: true
+        tree_id:
+          type: integer
+          readOnly: true
+        level:
+          type: integer
+          readOnly: true
+        parent:
+          type: integer
+          nullable: true
+      required:
+      - category_image
+      - id
+      - level
+      - lft
+      - name
+      - rght
+      - sub_category
+      - tree_id
+    CitySerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: City Name
+          maxLength: 50
+      required:
+      - id
+      - name
+    CreateFavoriteSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        time_created:
+          type: string
+          format: date
+          readOnly: true
+        product:
+          type: integer
+      required:
+      - id
+      - product
+      - time_created
+    CurrencySerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        currency_name:
+          type: string
+          maxLength: 50
+        conversion_factor:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Conversion Factor (معامل التحويل)
+      required:
+      - conversion_factor
+      - currency_name
+      - id
+    FavoriteSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        product:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+          readOnly: true
+        time_created:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - id
+      - product
+      - time_created
+      - user
+    Image:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        image:
+          type: string
+          format: uri
+      required:
+      - id
+      - image
+    OrderSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_item:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order_itemSerializers'
+          readOnly: true
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencySerializers'
+          readOnly: true
+        city:
+          allOf:
+          - $ref: '#/components/schemas/CitySerializers'
+          readOnly: true
+        proof_of_payment_image:
+          type: string
+          format: uri
+          nullable: true
+        payment_type:
+          type: string
+          maxLength: 50
+        customer_name:
+          type: string
+          maxLength: 100
+        customer_phone:
+          type: string
+          title: Customer phone number
+          maxLength: 50
+        customer_phone2:
+          type: string
+          nullable: true
+          title: Alternative phone number
+          maxLength: 50
+        total_paid:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+        is_delivered:
+          type: boolean
+          title: IS Delivered?
+        address:
+          type: string
+        is_proof:
+          type: boolean
+          title: Proofit status
+        user:
+          type: integer
+      required:
+      - city
+      - currency
+      - customer_name
+      - customer_phone
+      - date
+      - id
+      - order_item
+      - payment_type
+      - total_paid
+      - user
+    Order_itemSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        qty:
+          type: integer
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        total_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+        product:
+          type: integer
+          title: Products
+        order:
+          type: integer
+      required:
+      - date
+      - id
+      - order
+      - price
+      - product
+      - qty
+      - total_price
+    PaginatedOrderSerializersList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderSerializers'
+    PaginatedProductList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    PatchedUpdateUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+        phone_number:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        register_data:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          format: uri
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        rate:
+          type: string
+          readOnly: true
+        review:
+          type: string
+          readOnly: true
+        image:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        description:
+          type: string
+        category:
+          type: integer
+      required:
+      - category
+      - description
+      - id
+      - image
+      - price
+      - rate
+      - review
+    ReviewLikeSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        review:
+          type: integer
+      required:
+      - id
+      - review
+      - user
+    ReviewSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        review_date:
+          type: string
+          format: date-time
+          readOnly: true
+        review_text:
+          type: string
+        product:
+          type: integer
+      required:
+      - id
+      - product
+      - review_date
+      - review_text
+      - user
+    SingleProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        rate:
+          type: string
+          readOnly: true
+        review_count:
+          type: string
+          readOnly: true
+        review:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewSerializers'
+          readOnly: true
+        in_favorite:
+          type: boolean
+          readOnly: true
+        in_cart:
+          type: boolean
+          readOnly: true
+        image:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        description:
+          type: string
+        category:
+          type: integer
+      required:
+      - category
+      - description
+      - id
+      - image
+      - in_cart
+      - in_favorite
+      - price
+      - rate
+      - review
+      - review_count
+    UpdateUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+        phone_number:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        register_data:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          format: uri
+      required:
+      - email
+      - id
+      - image
+      - name
+      - phone_number
+      - register_data
+      - username
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        phone_number:
+          type: string
+          nullable: true
+          maxLength: 50
+        username:
+          type: string
+          nullable: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+        name:
+          type: string
+          title: Full name
+          maxLength: 60
+        image:
+          type: string
+          format: uri
+          nullable: true
+        user_auth:
+          type: string
+          readOnly: true
+      required:
+      - email
+      - id
+      - password
+      - user_auth
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        phone_number:
+          type: string
+          nullable: true
+          maxLength: 50
+        username:
+          type: string
+          nullable: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          maxLength: 150
+        name:
+          type: string
+          title: Full name
+          maxLength: 60
+        register_data:
+          type: string
+          maxLength: 20
+        image:
+          type: string
+          format: uri
+          nullable: true
+        previous_ordersast:
+          type: string
+          readOnly: true
+        being_prepared_ordersast:
+          type: string
+          readOnly: true
+      required:
+      - being_prepared_ordersast
+      - email
+      - id
+      - previous_ordersast
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

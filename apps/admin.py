@@ -1,7 +1,9 @@
-from .models import City, Currency, Favorite, Product, Promotion, Cart, Category, Promotion_category, Order, Order_item, Rate, Review, User, Review_Likes
+from django.db import models
+from .models import City, Currency, Favorite, Image, Product, Promotion, Cart, Category,  Order, Order_item, Promotion_product, Rate, Review, User, Review_Likes
 from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+
 # from django.contrib.auth.admin import UserAdmin
 from mptt.admin import DraggableMPTTAdmin
 from django.contrib.auth.admin import UserAdmin
@@ -141,20 +143,21 @@ class CategoryAdmin(DraggableMPTTAdmin):
 # Register your models here.
 
 
-admin.site.register(Product)
+# admin.site.register(Product)
 
 admin.site.register(Category, CategoryAdmin)
 
 admin.site.register([
     Order_item,
-    Promotion,
-    Promotion_category,
+    # Promotion,
+    # Promotion_product,
     Cart,
     Rate,
     Review_Likes,
     Favorite,
     City,
-    Currency
+    Currency,
+    # Image
 
 ])
 
@@ -174,3 +177,46 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Order, OrderAdmin)
+
+
+class CustomPromotionProductForm(forms.ModelForm):
+    class Meta:
+        model = Promotion_product
+        fields = '__all__'
+
+
+class CustomPromotionProductAdmin(admin.ModelAdmin):
+    form = CustomPromotionProductForm
+
+
+# admin.site.register(Promotion_product, CustomPromotionProductAdmin)
+
+
+# class CustomPromotionProductAdmin(admin.ModelAdmin):
+#     form = CustomPromotionProductForm
+
+#     def get_form(self, request, obj=None, **kwargs):
+#         form = super().get_form(request, obj, **kwargs)
+#         # Add additional customization to the form if needed
+#         return form
+
+
+admin.site.register(Promotion_product, CustomPromotionProductAdmin)
+
+
+class PromotionProductInline(admin.StackedInline):
+    model = Promotion_product
+    extra = 1
+
+
+class ImageInline(admin.StackedInline):
+    model = Image
+    extra = 1
+
+
+class CustomProductAdmin(admin.ModelAdmin):
+    inlines = [ImageInline, PromotionProductInline]
+    list_display = ('name', 'price')
+
+
+admin.site.register(Product, CustomProductAdmin)

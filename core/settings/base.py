@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'user_agents',
     'drf_spectacular',
     'schema_graph',
+
 ]
 
 MIDDLEWARE = [
@@ -187,3 +188,10 @@ SPECTACULAR_SETTINGS = {
 LOGIN_REDIRECT_URL = '/'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+MEDIA_URL = 'media/'
+MEDIAFILES_DIRS = [
+    BASE_DIR / "../media",
+]
+MEDIA_ROOT = BASE_DIR / '../media'

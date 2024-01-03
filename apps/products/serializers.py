@@ -1,11 +1,27 @@
-from apps.models import Favorite, Product, Promotion, Cart, Rate, Review, Category, Promotion_category, Review_Likes, User
+from apps.models import Favorite, Image, Product, Promotion, Cart, Rate, Review, Category, Review_Likes, User
 from rest_framework import serializers
 from ..orders.serializers import Order_itemSerializers, OrderSerializers
+
+
+class ImageSerializer(serializers.HyperlinkedModelSerializer):
+    image = serializers.ImageField(use_url=True)
+
+    def to_representation(self, instance):
+        return instance.image.url
+
+    class Meta:
+        model = Image
+        fields = ['id', 'image', ]
 
 
 class ProductSerializer(serializers.ModelSerializer):
     rate = serializers.SerializerMethodField(read_only=True)
     review = serializers.SerializerMethodField(read_only=True)
+    # image = serializers.SerializerMethodField(read_only=True)
+    image = ImageSerializer(read_only=True, many=True)
+
+    def get_image(self, obj):
+        return obj.image.first() or None
 
     def get_review(self, obj):
         # user = self.context.get('user' or None)
@@ -77,6 +93,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
     review = ReviewSerializers(many=True, read_only=True)
     in_favorite = serializers.SerializerMethodField(read_only=True)
     in_cart = serializers.SerializerMethodField(read_only=True)
+    image = ImageSerializer(read_only=True, many=True)
 
     def validate(self, attrs):
         self.review.context = self.context

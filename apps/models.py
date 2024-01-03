@@ -173,10 +173,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def add_cart(self, item_id: int, count: int):
         try:
-            return self.user_cart.create(item_id=item_id, count=count)
+            return self.cart.create(product_id=item_id, qty=count)
         except:
-            ins = self.user_cart.get(item_id=item_id)
-            ins.count = count
+            ins = self.cart.get(product_id=item_id)
+            ins.qty = count
             return ins.save()
 
     def add_favorite(self, item_id: int):
@@ -244,30 +244,43 @@ class Category(MPTTModel):
         db_table = 'Category'
 
 
-class Promotion_category(models.Model):
-    promotion = models.ForeignKey(
-        Promotion, verbose_name=_("Promotion"), on_delete=models.CASCADE, related_name='promotion_category')
-    category = models.ForeignKey(Category, verbose_name=_(
-        "category"), on_delete=models.CASCADE, related_name='promotion_category')
-    created_date = models.DateTimeField(
-        _("created at"), auto_now=False, auto_now_add=True)
-    updated_date = models.DateTimeField(
-        _("Updated at"), auto_now=True, auto_now_add=False)
-
-    class Meta:
-        db_table = 'Promotion_category'
-
-
 class Product(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name='category')
     name = models.CharField(max_length=50, default="")
     price = models.DecimalField(_("Price"), decimal_places=2, max_digits=8)
     description = models.TextField()
-    image = models.ImageField(_("Image"), upload_to="products_image",)
+    # image = models.ImageField(_("Image"), upload_to="products_image",)
+    # promotion = models.ManyToManyField(
+    #     Promotion, verbose_name=_("Promotions"), through='Promotion_product')
 
     class Meta:
         db_table = 'Product'
+
+
+class Promotion_product(models.Model):
+    promotion = models.ForeignKey(
+        Promotion, verbose_name=_("Promotion"), on_delete=models.DO_NOTHING, related_name='promotion_product')
+    product = models.ForeignKey(Product, verbose_name=_(
+        "Product"), on_delete=models.DO_NOTHING, related_name='promotion_product')
+    created_date = models.DateTimeField(
+        _("created at"), auto_now=False, auto_now_add=True)
+    updated_date = models.DateTimeField(
+        _("Updated at"), auto_now=True, auto_now_add=False)
+    is_active = models.BooleanField(_("Active Status"), default=True)
+
+    class Meta:
+        db_table = 'Promotion_Product'
+        unique_together = ("product", "promotion")
+
+
+class Image(models.Model):
+    image = models.ImageField(_("Images"), upload_to="products_image",)
+    product = models.ForeignKey(Product, verbose_name=_(
+        "Products"), on_delete=models.CASCADE, related_name="image")
+
+    class Meta:
+        db_table = 'Product_image'
 
 
 class Review(models.Model):
