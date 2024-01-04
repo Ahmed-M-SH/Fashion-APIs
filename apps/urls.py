@@ -7,7 +7,8 @@ urlpatterns = [
     path('auth/', include('apps.authentication.urls')),
     path('favorite/', include('apps.favorite.urls')),
     path('user/', include('apps.user.urls')),
-    path('categorys/', include('apps.categorie.urls'))
+    path('categorys/', include('apps.categorie.urls')),
+    path('orders/', include('apps.orders.urls')),
 
     # path('')
 ]

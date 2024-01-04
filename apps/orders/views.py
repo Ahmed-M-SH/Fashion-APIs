@@ -1,10 +1,13 @@
+from rest_framework.views import Response
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework import filters
 from ..pagination import StandardResultsSetPagination
+from rest_framework.decorators import action
 
-from apps.models import Order, Product
+
+from apps.models import City, Currency, Order, Product
 from . import serializers
 
 # Create your views here.
@@ -21,3 +24,20 @@ class OrderView(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         return {'user': self.request.user} if self.request.user.is_authenticated else {}
+
+    def create(self, request, *args, **kwargs):
+
+        return super().create(request, *args, **kwargs)
+
+    @action(detail=False, methods=['get'])
+    def get_payment_details(self, request, *args, **kwargs):
+        currency = Currency.objects.filter(is_active=True)
+        currencySer = serializers.CurrencySerializers(
+            instance=currency, many=True)
+        city = City.objects.filter(is_active=True)
+        citySer = serializers.CitySerializers(
+            instance=city, many=True)
+        return Response({
+            'currency': currencySer.data,
+            'city': citySer.data
+        })

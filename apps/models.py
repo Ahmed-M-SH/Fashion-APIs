@@ -1,3 +1,4 @@
+from xmlrpc.client import TRANSPORT_ERROR
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.dispatch import receiver
@@ -357,6 +358,7 @@ class Rate(models.Model):
 
 class City(models.Model):
     name = models.CharField(_("City Name"), max_length=50)
+    is_active = models.BooleanField(_("تفعيل المدينة"), default=True)
 
     class Meta:
         db_table = 'City'
@@ -366,6 +368,7 @@ class Currency (models.Model):
     currency_name = models.CharField(_("Currency Name"), max_length=50)
     conversion_factor = models.DecimalField(
         _("Conversion Factor (معامل التحويل)"), max_digits=12, decimal_places=2)
+    is_active = models.BooleanField(_("تفعيل العملة"), default=True)
 
     class Meta:
         db_table = 'Currency'
@@ -377,11 +380,12 @@ class Order(models.Model):
     city = models.ForeignKey(City, verbose_name=_(
         "City"), on_delete=models.DO_NOTHING, related_name='order')
     currency = models.ForeignKey(Currency, verbose_name=_(
-        "Currency"), on_delete=models.DO_NOTHING, related_name='order')
+        "Currency"), on_delete=models.DO_NOTHING, related_name='order', on_update=models.DO_NOTHING)
     proof_of_payment_image = models.ImageField(
         _("proof_of_payment_image"), upload_to="proof_of_payment_image", blank=True, null=True)
     payment_type = models.CharField(_("payment_type"), max_length=50)
-    customer_name = models.CharField(_("customer name"), max_length=100)
+    customer_name = models.CharField(
+        _("customer name"), max_length=100, blank=True, null=True)
     customer_phone = models.CharField(
         _("customer phone number"), max_length=50)
     customer_phone2 = models.CharField(
@@ -393,6 +397,13 @@ class Order(models.Model):
         _("IS Delivered?"), default=False, blank=True)
     address = models.TextField(_("Address"), blank=True, default="")
     is_proof = models.BooleanField(_("Proofit status"), default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.customer_name = self.user.name
+        if self.proof_of_payment_image and not self.is_proof:
+            self.is_proof = True
+        return super().save(*args, **kwargs)
 
     class Meta:
         db_table = 'Order'

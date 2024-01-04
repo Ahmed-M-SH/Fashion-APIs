@@ -48,32 +48,32 @@ class CartView(viewsets.ModelViewSet):
 #     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
 #     ordering_fields = '__all__'
 
-    # def list(self, request, *args, **kwargs):
-    #     """_summary_
+#     def list(self, request, *args, **kwargs):
+#         """_summary_
 
-    #     Args:
-    #         request (_type_): _description_
+#         Args:
+#             request (_type_): _description_
 
-    #     Returns:
-    #         _type_: _description_
-    #     """
-    #     store = Store.objects.filter(
-    #         product__product_item__item_Cart__user_id=request.user.id).annotate(count=Count('id'))
-    #     stors = {}
-    #     for s in store:
-    #         products = {
-    #             'id': s.id,
-    #             'store_name': s.store_name,
-    #         }
-    #         p = np.array(Product_item.objects.filter(
-    #             item_Cart__user__id=request.user.id, product__store=s))
-    #         products['product'] = np.array(self.serializer_class(instance=p, many=True, context={
-    #             'user': request.user
-    #         }).data)
-    #         stors[str(s.store_name)] = products
-    #         return Response({
-    #             'data': np.array(stors.values()).tolist()
-    #         })
+#         Returns:
+#             _type_: _description_
+#         """
+#         store = Store.objects.filter(
+#             product__product_item__item_Cart__user_id=request.user.id).annotate(count=Count('id'))
+#         stors = {}
+#         for s in store:
+#             products = {
+#                 'id': s.id,
+#                 'store_name': s.store_name,
+#             }
+#             p = np.array(Product_item.objects.filter(
+#                 item_Cart__user__id=request.user.id, product__store=s))
+#             products['product'] = np.array(self.serializer_class(instance=p, many=True, context={
+#                 'user': request.user
+#             }).data)
+#             stors[str(s.store_name)] = products
+#             return Response({
+#                 'data': np.array(stors.values()).tolist()
+#             })
 
 
 class CartMethodViewsetes(viewsets.ModelViewSet):

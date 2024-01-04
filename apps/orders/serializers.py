@@ -32,3 +32,7 @@ class OrderSerializers(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'  # ['__all__', 'order_item']
+
+# class OrderDtailSerializers(serializers.Serializer):
+#     currency=serializers.SerializerMethodField(read_only=True)
+#     city=serializers.SerializerMethodField(read_only=True)
