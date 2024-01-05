@@ -6,11 +6,12 @@ from ..orders.serializers import Order_itemSerializers, OrderSerializers
 
 
 class FavoriteSerializers(serializers.ModelSerializer):
-    user = serializers.IntegerField(read_only=True)
-    product = ProductSerializer(many=True, read_only=True)
+    user = serializers.HiddenField(default=None)
+    product = ProductSerializer(read_only=True)
 
     def validate(self, attrs):
         # self.user = self.context.get('user').id
+        self.product.context = self.context
         attrs['user'] = self.context.get('user')
         return super().validate(attrs)
 

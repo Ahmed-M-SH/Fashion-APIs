@@ -19,6 +19,26 @@ class ProductSerializer(serializers.ModelSerializer):
     review = serializers.SerializerMethodField(read_only=True)
     # image = serializers.SerializerMethodField(read_only=True)
     image = ImageSerializer(read_only=True, many=True)
+    new_price = serializers.SerializerMethodField(read_only=True)
+    promotion = serializers.SerializerMethodField(read_only=True)
+
+    def get_promotion(self, obj):
+        promotion = obj.promotion_product.filter(
+            is_active=True).first() or None
+
+        return promotion.promotion.discount_rate if promotion else 0
+
+    def get_new_price(self, obj):
+        promotion = obj.promotion_product.filter(
+            promotion__is_active=True).first()
+        if promotion and promotion.promotion.is_active and promotion.promotion.discount_rate > 0:
+            discount_rate = float(promotion.promotion.discount_rate)
+            discounted_amount = (float(obj.price) * discount_rate) / 100.0
+            new_price = float(obj.price) - discounted_amount
+            # Round to 2 decimal places for currency
+            return round(new_price, 2)
+        else:
+            return float(obj.price)
 
     def get_image(self, obj):
         return obj.image.first() or None

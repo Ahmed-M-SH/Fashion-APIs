@@ -1,3 +1,4 @@
+from PIL import Image as PImage
 from xmlrpc.client import TRANSPORT_ERROR
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
@@ -223,9 +224,16 @@ class Promotion(models.Model):
     description = models.TextField()
     start_date = models.DateTimeField(_("Start Date"))
     end_date = models.DateTimeField(
-        _("End Date"), auto_now=False, auto_now_add=False)
+        _("Promotion End Aftar"))
     discount_rate = models.FloatField(_("discount rate"))
     is_active = models.BooleanField(_("Is Active"), default=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Update is_active based on current date
+        current_date = timezone.now()
+        self.is_active = self.start_date <= current_date <= self.start_date + self.duration
+
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = 'Promotion'
@@ -244,6 +252,35 @@ class Category(MPTTModel):
 
     def __str__(self):
         return f"name: {self.name} parent {self.parent} id {self.id} "
+
+    # @property
+    # def image_dimensions(self):
+    #     """
+    #     Get the dimensions of the category image.
+    #     """
+
+    #     img = Image.open(self.category_image.path)
+    #     return img.size  # Return a tuple (width, height)
+
+    # @image_dimensions.setter
+    # def image_dimensions(self, dimensions):
+    #     """
+    #     Set the width of the category image.
+    #     """
+    #     self.image_width_field = dimensions[0]
+    #     # Optionally, you may want to resize the image here
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = PImage.open(self.category_image.path)
+
+        # Resize the image to the desired dimensions (200px width, 140px height)
+        output_size = (200, 140)
+        img.thumbnail(output_size)
+
+        # Save the resized image
+        img.save(self.category_image.path)
 
     class Meta:
         db_table = 'Category'
@@ -363,6 +400,9 @@ class City(models.Model):
     class Meta:
         db_table = 'City'
 
+    def __str__(self) -> str:
+        return str(self.name)
+
 
 class Currency (models.Model):
     currency_name = models.CharField(_("Currency Name"), max_length=50)
@@ -373,6 +413,10 @@ class Currency (models.Model):
     class Meta:
         db_table = 'Currency'
 
+    def __str__(self) -> str:
+
+        return str(self.currency_name)
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
@@ -380,7 +424,7 @@ class Order(models.Model):
     city = models.ForeignKey(City, verbose_name=_(
         "City"), on_delete=models.DO_NOTHING, related_name='order')
     currency = models.ForeignKey(Currency, verbose_name=_(
-        "Currency"), on_delete=models.DO_NOTHING, related_name='order', on_update=models.DO_NOTHING)
+        "Currency"), on_delete=models.DO_NOTHING, related_name='order',)
     proof_of_payment_image = models.ImageField(
         _("proof_of_payment_image"), upload_to="proof_of_payment_image", blank=True, null=True)
     payment_type = models.CharField(_("payment_type"), max_length=50)

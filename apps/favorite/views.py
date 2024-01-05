@@ -14,7 +14,7 @@ from . import serializers
 class FavoriteView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.FavoriteSerializers
-    lookup_field = 'product_id'
+    # lookup_field = 'product_id'
 
     def get_serializer_context(self):
         return {'user': self.request.user}
@@ -26,4 +26,4 @@ class FavoriteView(viewsets.ModelViewSet):
             return serializers.FavoriteSerializers
 
     def get_queryset(self):
-        return Favorite.objects.filter(user=self.request.user)
+        return Favorite.objects.filter(user__id=self.request.user.id).select_related('user', 'product')
