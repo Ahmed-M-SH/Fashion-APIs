@@ -20,7 +20,7 @@ class ProductView(viewsets.ModelViewSet):
     search_fields = ['name', 'price']
     filterset_fields = ['name', 'price']
     ordering_fields = '__all__'
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by('id')
     serializer_class = serializers.ProductSerializer
     pagination_class = StandardResultsSetPagination
 

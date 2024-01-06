@@ -144,8 +144,20 @@ class CartSerializer(serializers.ModelSerializer):
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', read_only=True)
     # user = serializers.HiddenField(default=None)
 
-    def save(self, **kwargs):
-        cart = Cart.objects.update_or_create(**kwargs)
+    def create(self, validated_data):
+        user = self.context['user']
+        product_id = validated_data['product_id']
+        qty = validated_data.get('qty') or 1
+
+        # Check if the Cart object already exists for the given product and user
+        cart, created = Cart.objects.get_or_create(
+            user=user, product_id=product_id)
+
+        # Update the quantity if the Cart object already exists
+        if not created:
+            cart.qty = qty
+            cart.save()
+
         return cart
 
     class Meta:
