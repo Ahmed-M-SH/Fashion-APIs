@@ -21,6 +21,8 @@ urlpatterns = [
     path("all-notification/", views.NotificationView.as_view({'get': 'list'})),
     path("unread-notification/",
          views.NotificationView.as_view({'get': 'unread_notification'})),
+    path("read-all-notification/",
+         views.NotificationView.as_view({'get': 'read_all_notification'})),
 
     path('<int:pk>/', views.UserViewsets.as_view({'get': 'retrieve'})),
 

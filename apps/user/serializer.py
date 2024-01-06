@@ -59,4 +59,5 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = "__all__"
+        fields = ("id", "title", "text", "time_created", "is_readed")
+        # exclude = ('user',)

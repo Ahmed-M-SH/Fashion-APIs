@@ -296,6 +296,23 @@ class Product(models.Model):
     # promotion = models.ManyToManyField(
     #     Promotion, verbose_name=_("Promotions"), through='Promotion_product')
 
+    def get_promotion(self):
+        promotion = self.promotion_product.filter(
+            is_active=True).first() or None
+        return promotion.promotion.discount_rate if promotion else 0
+
+    def get_new_price(self):
+        promotion = self.promotion_product.filter(
+            promotion__is_active=True).first()
+        if promotion and promotion.promotion.is_active and promotion.promotion.discount_rate > 0:
+            discount_rate = float(promotion.promotion.discount_rate)
+            discounted_amount = (float(self.price) * discount_rate) / 100.0
+            new_price = float(self.price) - discounted_amount
+            # Round to 2 decimal places for currency
+            return round(new_price, 2)
+        else:
+            return float(self.price)
+
     class Meta:
         db_table = 'Product'
 
@@ -354,7 +371,7 @@ class Cart(models.Model):
         "User"), on_delete=models.CASCADE, related_name='cart')
     product = models.ForeignKey(Product, verbose_name=_(
         "Product"), on_delete=models.CASCADE, related_name='cart')
-    qty = models.IntegerField(_("qty"))
+    qty = models.IntegerField(_("qty"), default=1)
     date = models.DateTimeField(auto_now=False, auto_now_add=True)
 
     class Meta:

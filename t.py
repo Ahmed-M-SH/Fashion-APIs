@@ -7,6 +7,12 @@ from apps.models import Address
 from apps.models import User, Product_item, Wishlist, Favorite, Comment, Image, Store, Chat, Product, Cart, Rate, Order, Order_type
 import uuid
 from django.utils.text import slugify
+from apps.models import Category
+c = Category.objects.filter(parent=None)
+c = Category.objects.filter(parent=1)
+cat = c.first()
+Category.get_siblings
+
 
 user = User.objects.first()
 item = Product_item.objects.first()

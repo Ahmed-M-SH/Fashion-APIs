@@ -1,3 +1,4 @@
+from sqlite3 import IntegrityError
 from apps.models import Favorite, Product, Promotion, Cart, Rate, Review, Category, Review_Likes, User
 from rest_framework import serializers
 
@@ -8,6 +9,37 @@ from ..orders.serializers import Order_itemSerializers, OrderSerializers
 # from rest_framework import serializers
 # from apps.models import Product_item, Cart, Store, Image, User
 # from django.conf import settings
+
+
+class CartListSerializers(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+    price = serializers.SerializerMethodField(read_only=True)
+    new_price = serializers.SerializerMethodField(read_only=True)
+    promotion = serializers.SerializerMethodField(read_only=True)
+    image = serializers.SerializerMethodField(read_only=True)
+    date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', read_only=True)
+
+    def get_image(self, obj):
+        image = obj.product.image.first()
+        return image.image.url if image else ""
+
+    def get_name(self, obj):
+        return obj.product.name
+
+    def get_promotion(self, obj):
+        return obj.product.get_promotion()
+
+    def get_new_price(self, obj):
+
+        return obj.product.get_new_price()
+
+    def get_price(self, obj):
+        return obj.product.price
+
+    class Meta:
+        model = Cart
+        fields = ('id', 'name', 'price', 'new_price', 'qty',
+                  'promotion', 'product', 'image', 'date')
 
 
 class FavoriteSerializers(serializers.ModelSerializer):
@@ -110,6 +142,11 @@ class CartViewSerializer(ProductSerializer):
 class CartSerializer(serializers.ModelSerializer):
     product_id = serializers.IntegerField()
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', read_only=True)
+    # user = serializers.HiddenField(default=None)
+
+    def save(self, **kwargs):
+        cart = Cart.objects.update_or_create(**kwargs)
+        return cart
 
     class Meta:
         model = Cart

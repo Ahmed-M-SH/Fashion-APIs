@@ -12,20 +12,20 @@ from . import serializers
 
 class CartView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    serializer_class = serializers.FavoriteSerializers
-    lookup_field = 'product_id'
+    serializer_class = serializers.CartListSerializers
+    # lookup_field = 'product_id'
 
     def get_serializer_context(self):
         return {'user': self.request.user}
 
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return serializers.CreateFavoriteSerializers
-        else:
-            return serializers.FavoriteSerializers
+    # def get_serializer_class(self):
+    #     if self.action == 'create':
+    #         return serializers.CreateFavoriteSerializers
+    #     else:
+    #         return serializers.FavoriteSerializers
 
     def get_queryset(self):
-        return Favorite.objects.filter(user=self.request.user)
+        return Cart.objects.filter(user=self.request.user)
 
 
 # s = Store.objects.filter(product_store__Product_Cart__user__id=20)
@@ -134,10 +134,13 @@ class CartMethodViewsetes(viewsets.ModelViewSet):
         Returns:
             _type_: _description_
         """
+        user = request.user
         ser = self.serializer_class(
-            data=request.data.get('products' or None), many=True)
+            data=request.data.get('products' or None), many=True, context={'user': user})
         if ser.is_valid(raise_exception=True):
+            # Cart.objects.bulk_create(ser.data)
             ser.save(user_id=request.user.id)
+            # user.cart.create(ser.data)
             return Response({
                 'data': 'Added to Cart done'
             }, status=status.HTTP_200_OK)
@@ -157,6 +160,7 @@ class CartMethodViewsetes(viewsets.ModelViewSet):
             _type_: _description_
         """
         item = request.data.get('products' or None)
+        user = request.user
         if item:
             try:
                 # print(list(item))
@@ -172,9 +176,9 @@ class CartMethodViewsetes(viewsets.ModelViewSet):
                     'error': f'error {e}'
                 }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({
-                'error': 'error in data'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            t = user.cart.all().delete()
+
+            return Response(status=status.HTTP_200_OK)
 
     @action(detail=True)
     def update_list(self, request, *args, **kwargs):

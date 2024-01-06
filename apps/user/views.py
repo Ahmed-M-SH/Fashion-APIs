@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from apps.models import Notification, User
 from .serializer import NotificationSerializer, UpdateUserSerializer, UserProfileSerializer, UserSerializer
 from rest_framework import viewsets
+from rest_framework.views import status
 from rest_framework import filters
 from rest_framework.response import Response
 # Create your views here.
@@ -108,3 +109,12 @@ class NotificationView(viewsets.ModelViewSet):
         notification = user.notification.filter(is_readed=False)
         ser = self.serializer_class(notification, many=True)
         return Response(ser.data)
+
+    @action(detail=False, methods=['get'])
+    def read_all_notification(self, request, *args, **kwargs):
+        user = request.user
+        user: User
+        notification = user.notification.filter(
+            is_readed=False).update(is_readed=True)
+        # ser = self.serializer_class(notification, many=True)
+        return Response(status=status.HTTP_200_OK)

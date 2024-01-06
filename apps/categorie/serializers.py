@@ -12,7 +12,6 @@ def get_all_children(obj):
         'category_image': obj.category_image.url,
         'sub_category': []
     }
-
     if Category.get_children(obj).exists():
         children = []
         for item in Category.get_children(obj):
@@ -42,7 +41,7 @@ class CategorySerializer(serializers.ModelSerializer):
     Args:
         serializers (Category): Get, Add , Delete, Update Category for All Levels
     """
-    sub_category = serializers.SerializerMethodField(read_only=True)
+    # sub_category = serializers.SerializerMethodField(read_only=True)
 
     def get_sub_category(self, obj):
         """
@@ -88,4 +87,5 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name', "category_image", "sub_category", "level",)
+        # fields = ('id', 'name', "category_image", "sub_category", "level",)
+        fields = '__all__'
