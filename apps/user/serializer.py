@@ -56,6 +56,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+    time_created = serializers.DateTimeField(
+        format='%Y-%m-%d %H:%M', read_only=True)
 
     class Meta:
         model = Notification
