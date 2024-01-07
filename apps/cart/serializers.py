@@ -140,13 +140,13 @@ class CartViewSerializer(ProductSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
-    product_id = serializers.IntegerField()
+    product = serializers.IntegerField()
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', read_only=True)
     # user = serializers.HiddenField(default=None)
 
     def create(self, validated_data):
         user = self.context['user']
-        product_id = validated_data['product_id']
+        product_id = validated_data['product']
         qty = validated_data.get('qty') or 1
 
         # Check if the Cart object already exists for the given product and user
@@ -162,7 +162,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ('product_id', 'qty', 'date')
+        fields = ('product', 'qty', 'date')
 
 
 class AddToCartSerializer(serializers.ModelSerializer):

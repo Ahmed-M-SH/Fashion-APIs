@@ -8,7 +8,7 @@ urlpatterns = [
     path('add-list/',
          views.CartMethodViewsetes.as_view({'post': 'create_list'}), name='add-cart'),
     path('<int:pk>/delete/',
-         views.CartMethodViewsetes.as_view({'delete': 'destroy'}), name='delete-cart'),
+         views.CartMethodViewsetes.as_view({'post': 'destroy_list'}), name='delete-cart'),
     path('delete-all/',
          views.CartMethodViewsetes.as_view({'post': 'destroy_list'}), name='delete_all-cart'),
     path('delete-list/', views.CartMethodViewsetes.as_view({'post': 'destroy_list'}),

@@ -135,11 +135,13 @@ class CartMethodViewsetes(viewsets.ModelViewSet):
             _type_: _description_
         """
         user = request.user
+        # print(request.data.get('products' or None))
         ser = self.serializer_class(
             data=request.data.get('products' or None), many=True, context={'user': user})
         if ser.is_valid(raise_exception=True):
             # Cart.objects.bulk_create(ser.data)
             ser.save(user_id=request.user.id)
+
             # user.cart.create(ser.data)
             return Response({
                 'data': 'Added to Cart done'
@@ -160,6 +162,7 @@ class CartMethodViewsetes(viewsets.ModelViewSet):
             _type_: _description_
         """
         item = request.data.get('products' or None)
+        # print(item)
         user = request.user
         if item:
             try:
@@ -167,7 +170,7 @@ class CartMethodViewsetes(viewsets.ModelViewSet):
                 for id in item:
                     # print(id.get('product_id'))
                     Cart.objects.filter(
-                        user_id=request.user.id, product_id=id.get('product_id')).delete()
+                        user_id=request.user.id, id=id.get('id')).delete()
                 return Response({
                     'data': 'Done'
                 }, status=status.HTTP_200_OK)
