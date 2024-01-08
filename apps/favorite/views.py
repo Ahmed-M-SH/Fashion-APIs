@@ -17,7 +17,7 @@ from . import serializers
 class FavoriteView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     # serializer_class = serializers.FavoriteSerializers
-    # lookup_field = 'product_id'
+    lookup_field = 'product_id'
 
     def get_serializer_context(self):
         return {'user': self.request.user}
@@ -32,8 +32,8 @@ class FavoriteView(viewsets.ModelViewSet):
         ser = CreateFavoriteSerializers(
             data=request.data, context={'user': request.user})
 
-        print(
-            f"User: {request.user}, Product ID: {request.data.get('product')}")
+        # print(
+        # f"User: {request.user}, Product ID: {request.data.get('product')}")
 
         ser.is_valid(raise_exception=True)
         ser.save()
