@@ -347,6 +347,22 @@ class Image(models.Model):
     class Meta:
         db_table = 'Product_image'
 
+    def __str__(self) -> str:
+        return self.product.name
+
+
+class Promotion_Image(models.Model):
+    image = models.ForeignKey(Image, verbose_name=_(
+        "صورة العرض"), on_delete=models.DO_NOTHING)
+    promotion = models.ForeignKey(
+        Promotion, verbose_name=_(""), on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'Promotion_Image'
+
+    def __str__(self) -> str:
+        return self.promotion.name
+
 
 class Review(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
