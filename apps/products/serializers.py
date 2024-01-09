@@ -188,6 +188,19 @@ class ReviewLikeSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class RateSerializers(serializers.ModelSerializer):
+    user = serializers.IntegerField(read_only=True)
+
+    def validate(self, attrs):
+        # self.user = self.context.get('user').id
+        attrs['user'] = self.context.get('user')
+        return super().validate(attrs)
+
+    class Meta:
+        model = Rate
+        fields = '__all__'
+
+
 class DeleteReviewLikeSerializers:
     user = serializers.IntegerField
 

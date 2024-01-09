@@ -5,7 +5,7 @@ from rest_framework import filters
 from ..pagination import StandardResultsSetPagination
 from rest_framework.views import Response
 
-from apps.models import Favorite, Product, Review, Review_Likes
+from apps.models import Favorite, Product, Rate, Review, Review_Likes
 from django_filters.rest_framework import DjangoFilterBackend
 
 from . import serializers
@@ -38,6 +38,7 @@ class CreateReviewView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Review.objects.all()
     serializer_class = serializers.ReviewSerializers
+    lookup_field = 'product_id'
 
     def get_serializer_context(self):
         return {'user': self.request.user}
@@ -56,6 +57,15 @@ class CreateReviewView(viewsets.ModelViewSet):
             return Response({
                 'error': serializers.errors
             }, status=status.HTTP_404_NOT_FOUND)
+
+
+class CreateRatingView(viewsets.ModelViewSet):
+    queryset = Rate.objects.all()
+    serializer_class = serializers.RateSerializers
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        return {'user': self.request.user}
 
 
 class CreateReviewLikeView(viewsets.ModelViewSet):

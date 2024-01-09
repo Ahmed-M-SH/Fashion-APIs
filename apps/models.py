@@ -358,7 +358,6 @@ class Review(models.Model):
 
     class Meta:
         db_table = 'Review'
-        unique_together = ("product", "user")
 
 
 class Review_Likes(models.Model):
