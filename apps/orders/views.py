@@ -7,7 +7,7 @@ from ..pagination import StandardResultsSetPagination
 from rest_framework.decorators import action
 
 
-from apps.models import City, Currency, Order, Product
+from apps.models import City, Currency, Order, Payment_type, Product
 from . import serializers
 
 # Create your views here.
@@ -19,7 +19,7 @@ class OrderView(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     ordering_fields = '__all__'
     queryset = Order.objects.all()
-    pagination_class = StandardResultsSetPagination
+    # pagination_class = StandardResultsSetPagination
     serializer_class = serializers.OrderSerializers
 
     def get_serializer_context(self):
@@ -37,7 +37,11 @@ class OrderView(viewsets.ModelViewSet):
         city = City.objects.filter(is_active=True)
         citySer = serializers.CitySerializers(
             instance=city, many=True)
+        payment_type = Payment_type.objects.filter(is_active=True)
+        paymentser = serializers.Payment_TypeSerializers(
+            instance=payment_type, many=True)
         return Response({
             'currency': currencySer.data,
-            'city': citySer.data
+            'city': citySer.data,
+            'payment_type': paymentser.data
         })

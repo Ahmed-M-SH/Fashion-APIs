@@ -313,6 +313,12 @@ class Product(models.Model):
         else:
             return float(self.price)
 
+    def get_qty_cart(self, user: User):
+        if self.cart.get(user=user):
+            return self.cart.get(user=user).qty
+        else:
+            return 0
+
     class Meta:
         db_table = 'Product'
 
@@ -435,6 +441,14 @@ class Currency (models.Model):
         return str(self.currency_name)
 
 
+class Payment_type(models.Model):
+    name = models.CharField(_("اسم طريقة الدفع"), max_length=50)
+    is_active = models.BooleanField(_("تفعيل طريقة الدفع"), default=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Order(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
         "User"), on_delete=models.DO_NOTHING, related_name='order')
@@ -444,7 +458,8 @@ class Order(models.Model):
         "Currency"), on_delete=models.DO_NOTHING, related_name='order',)
     proof_of_payment_image = models.ImageField(
         _("proof_of_payment_image"), upload_to="proof_of_payment_image", blank=True, null=True)
-    payment_type = models.CharField(_("payment_type"), max_length=50)
+    payment_type = models.ForeignKey(Payment_type, verbose_name=_(
+        "طريقة الدفع"), on_delete=models.DO_NOTHING)
     customer_name = models.CharField(
         _("customer name"), max_length=100, blank=True, null=True)
     customer_phone = models.CharField(
@@ -452,7 +467,7 @@ class Order(models.Model):
     customer_phone2 = models.CharField(
         _("Alternative phone number"), max_length=50, null=True, blank=True)
     total_paid = models.DecimalField(
-        _("Total Paid"), max_digits=12, decimal_places=2)
+        _("Total Paid"), max_digits=12, decimal_places=2, blank=True, null=True, default=0.0)
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
     is_delivered = models.BooleanField(
         _("IS Delivered?"), default=False, blank=True)
@@ -477,12 +492,15 @@ class Order_item(models.Model):
         "Order"), on_delete=models.DO_NOTHING, related_name="order_item")
     qty = models.IntegerField(_("qty"))
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
-    price = models.DecimalField(_("Price"), decimal_places=2, max_digits=12)
+    price = models.DecimalField(
+        _("Price"), decimal_places=2, max_digits=12, blank=True)
     total_price = models.DecimalField(
         _("Total Price"), decimal_places=2, max_digits=12, blank=True, editable=False,)
 
     def save(self, *args, **kwargs):
         # Calculate the total price based on the quantity and price of the product
+        self.qty = self.product.get_qty_cart(self.order.user)
+        self.price = self.product.get_new_price()
         self.total_price = self.qty * self.price
         super().save(*args, **kwargs)
 

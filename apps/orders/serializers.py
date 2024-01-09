@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.models import City, Currency, Order, Order_item
+from apps.models import City, Currency, Order, Order_item, Payment_type, Product
 
 
 class Order_itemSerializers(serializers.ModelSerializer):
@@ -23,11 +23,49 @@ class CurrencySerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrderSerializers(serializers.ModelSerializer):
+class Payment_TypeSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Payment_type
+        fields = "__all__"
 
-    order_item = Order_itemSerializers(many=True, read_only=True)
-    currency = CurrencySerializers(read_only=True)
-    city = CitySerializers(read_only=True)
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all())
+    qty = serializers.IntegerField()
+
+    class Meta:
+        model = Order_item
+        fields = ['product', 'qty']
+
+
+class OrderSerializers(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=None)
+    order_items = OrderItemSerializer(many=True, write_only=True)
+
+    def validate(self, attrs):
+        attrs['user'] = self.context.get('user')
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        order_items_data = validated_data.pop('order_items')
+        order = Order.objects.create(**validated_data)
+
+        for order_item_data in order_items_data:
+            Order_item.objects.create(order=order, **order_item_data)
+
+        return order
+
+    class Meta:
+        model = Order
+        fields = '__all__'  # ['__all__', 'order_item']
+
+
+# class PaymentDetailSerializers(serializers.ModelSerializer):
+#     order_item = Order_itemSerializers(many=True, read_only=True)
+#     currency = CurrencySerializers(many=True, read_only=True)
+#     city = CitySerializers(many=True, read_only=True)
+#     payment_Type = Payment_TypeSerializers(many=True, read_only=True)
 
     class Meta:
         model = Order
