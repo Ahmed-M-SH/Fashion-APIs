@@ -11,7 +11,7 @@ class CategoryView(APIView):
     serializer_class = CategorySerializer
 
     def get(self, request: Request):
-        parent = request.data.get("parent") or None
+        parent = request.query_params.get("parent") or None
         data = Category.objects.filter(parent=parent)
         ser = self.serializer_class(instance=data, many=True,)
         return Response(ser.data, status=status.HTTP_200_OK)

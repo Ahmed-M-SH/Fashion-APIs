@@ -8,4 +8,7 @@ urlpatterns = [
     path('payment-detail/',
          views.OrderView.as_view({'get': 'get_payment_details'})),
     path('<pk>/', views.OrderView.as_view({'get': 'retrieve'})),
+    path('<pk>/update/',
+         views.OrderView.as_view({'put': 'partial_update', 'patch': 'partial_update'})),
 ]
+# {'put': 'partial_update', 'patch': 'partial_update'}

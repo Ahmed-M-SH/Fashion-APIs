@@ -4,37 +4,49 @@ from .forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPa
 from django.contrib.auth import logout
 from apps.utils import all_sales
 from apps.models import Order
+from django.contrib.auth.decorators import user_passes_test
 
 # Create your views here.
 
 # Pages
 
 
+def is_staff_or_superuser(user):
+    return user.is_staff or user.is_superuser
+
+
+@user_passes_test(is_staff_or_superuser)
 def index(request):
     return render(request, 'pages/index.html', {'segment': 'index', })
 
 
+@user_passes_test(is_staff_or_superuser)
 def billing(request):
     order = Order.objects.all()
     return render(request, 'pages/billing.html', {'segment': 'billing', "orders": order})
 
 
+@user_passes_test(is_staff_or_superuser)
 def tables(request):
     return render(request, 'pages/tables.html', {'segment': 'tables'})
 
 
+@user_passes_test(is_staff_or_superuser)
 def vr(request):
     return render(request, 'pages/virtual-reality.html', {'segment': 'vr'})
 
 
+@user_passes_test(is_staff_or_superuser)
 def rtl(request):
     return render(request, 'pages/rtl.html', {'segment': 'rtl'})
 
 
+@user_passes_test(is_staff_or_superuser)
 def notification(request):
     return render(request, 'pages/notifications.html', {'segment': 'notification'})
 
 
+@user_passes_test(is_staff_or_superuser)
 def profile(request):
     return render(request, 'pages/profile.html', {'segment': 'profile'})
 

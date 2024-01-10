@@ -21,10 +21,10 @@ def generate_pdf(request, order_id):
 
     # Create a PDF response
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="Invoice_{order.customer_name}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="فاتورة طلب {order.customer_name} رقم {order_id}.pdf"'
 
     # Generate PDF from HTML
-    pisa_status = pisa.CreatePDF(html, dest=response)
+    pisa_status = pisa.CreatePDF(html, dest=response, encoding="UTF-8")
 
     if pisa_status.err:
         return HttpResponse('Error generating PDF', status=500)

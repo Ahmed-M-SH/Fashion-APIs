@@ -42,6 +42,11 @@ class CategorySerializer(serializers.ModelSerializer):
         serializers (Category): Get, Add , Delete, Update Category for All Levels
     """
     # sub_category = serializers.SerializerMethodField(read_only=True)
+    have_children = serializers.SerializerMethodField(read_only=True)
+
+    def get_have_children(self, obj: Category):
+
+        return obj.get_children().exists()
 
     def get_sub_category(self, obj):
         """

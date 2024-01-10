@@ -22,12 +22,24 @@ class OrderView(viewsets.ModelViewSet):
     # pagination_class = StandardResultsSetPagination
     serializer_class = serializers.OrderSerializers
 
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
     def get_serializer_context(self):
         return {'user': self.request.user} if self.request.user.is_authenticated else {}
 
-    def create(self, request, *args, **kwargs):
-
-        return super().create(request, *args, **kwargs)
+    # def create(self, request, *args, **kwargs):
+    #     # print(request.data)
+    #     # ser = self.serializer_class(data=request.data)
+    #     # if ser.is_valid(raise_exception=True):
+    #     #     ser.save()
+    #     #     return Response(ser.data, status=200)
+    #     # else:
+    #     #     print(ser.errors)
+    #     #     return Response({
+    #     #         'error': ser.errors
+    #     #     }, status=400)
+    #     return super().create()
 
     @action(detail=False, methods=['get'])
     def get_payment_details(self, request, *args, **kwargs):

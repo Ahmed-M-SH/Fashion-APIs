@@ -16,9 +16,10 @@ from . import serializers
 class ProductView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     # serializer_class = ProductSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter,]
-    search_fields = ['name', 'price']
-    filterset_fields = ['name', 'price']
+    filter_backends = [DjangoFilterBackend,
+                       filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'price', 'description',]
+    filterset_fields = ['name', 'price', 'category']
     ordering_fields = '__all__'
     queryset = Product.objects.all().order_by('id')
     serializer_class = serializers.ProductSerializer
