@@ -149,7 +149,7 @@ admin.site.register(Category, CategoryAdmin)
 
 admin.site.register([
     Order_item,
-    # Promotion,
+    Promotion,
     # Promotion_product,
     Cart,
     Rate,

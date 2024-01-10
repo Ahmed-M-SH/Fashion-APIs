@@ -3,6 +3,17 @@ from rest_framework import serializers
 from ..orders.serializers import Order_itemSerializers, OrderSerializers
 
 
+class PromotionSerializers(serializers.ModelSerializer):
+    start_date = serializers.DateTimeField(
+        format='%Y-%m-%d %H:%M', read_only=True)
+    end_date = serializers.DateTimeField(
+        format='%Y-%m-%d %H:%M', read_only=True)
+
+    class Meta:
+        model = Promotion
+        fields = "__all__"
+
+
 class ImageSerializer(serializers.HyperlinkedModelSerializer):
     image = serializers.ImageField(use_url=True)
 

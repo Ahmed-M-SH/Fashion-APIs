@@ -1,3 +1,4 @@
+from re import S
 from PIL import Image as PImage
 from xmlrpc.client import TRANSPORT_ERROR
 from django.db import transaction
@@ -227,13 +228,18 @@ class Promotion(models.Model):
         _("Promotion End Aftar"))
     discount_rate = models.FloatField(_("discount rate"))
     is_active = models.BooleanField(_("Is Active"), default=True, blank=True)
+    image = models.ImageField(
+        _("صورة العرض"), upload_to="promotion-imag/", null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # Update is_active based on current date
         current_date = timezone.now()
-        self.is_active = self.start_date <= current_date <= self.start_date + self.duration
+        # self.is_active = self.start_date <= current_date <= self.end_date
 
         super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return self.name
 
     class Meta:
         db_table = 'Promotion'
@@ -349,19 +355,6 @@ class Image(models.Model):
 
     def __str__(self) -> str:
         return self.product.name
-
-
-class Promotion_Image(models.Model):
-    image = models.ForeignKey(Image, verbose_name=_(
-        "صورة العرض"), on_delete=models.DO_NOTHING)
-    promotion = models.ForeignKey(
-        Promotion, verbose_name=_(""), on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'Promotion_Image'
-
-    def __str__(self) -> str:
-        return self.promotion.name
 
 
 class Review(models.Model):

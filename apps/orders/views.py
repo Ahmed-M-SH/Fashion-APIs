@@ -20,10 +20,16 @@ class OrderView(viewsets.ModelViewSet):
     ordering_fields = '__all__'
     queryset = Order.objects.all()
     # pagination_class = StandardResultsSetPagination
-    serializer_class = serializers.OrderSerializers
+    # serializer_class = serializers.OrderSerializers
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == "retrieve":
+            return serializers.GetOrderSerializers
+        else:
+            return serializers.OrderSerializers
 
     def get_serializer_context(self):
         return {'user': self.request.user} if self.request.user.is_authenticated else {}

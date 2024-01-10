@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.ProductView.as_view({'get': 'list'})),
     path('create/', views.ProductView.as_view({'post': 'create'})),
-
+    path('promotion/', views.PromotionView.as_view({'get': 'list'})),
     path('review/create/',
          views.CreateReviewView.as_view({'post': 'create'})),
     path('reviewlike/create/',

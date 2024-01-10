@@ -5,7 +5,7 @@ from rest_framework import filters
 from ..pagination import StandardResultsSetPagination
 from rest_framework.views import Response
 
-from apps.models import Favorite, Product, Rate, Review, Review_Likes
+from apps.models import Favorite, Product, Promotion, Rate, Review, Review_Likes
 from django_filters.rest_framework import DjangoFilterBackend
 
 from . import serializers
@@ -105,3 +105,8 @@ class CreateReviewLikeView(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
+
+
+class PromotionView(viewsets.ModelViewSet):
+    queryset = Promotion.objects.filter(is_active=True)
+    serializer_class = serializers.PromotionSerializers

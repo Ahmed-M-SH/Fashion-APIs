@@ -10,6 +10,8 @@ class Order_itemSerializers(serializers.ModelSerializer):
 
 
 class CitySerializers(serializers.ModelSerializer):
+    def to_representation(self, instance: City):
+        return instance.name
 
     class Meta:
         model = City
@@ -18,12 +20,19 @@ class CitySerializers(serializers.ModelSerializer):
 
 class CurrencySerializers(serializers.ModelSerializer):
 
+    def to_representation(self, instance: Currency):
+        return instance.currency_name
+
     class Meta:
         model = Currency
         fields = '__all__'
 
 
 class Payment_TypeSerializers(serializers.ModelSerializer):
+
+    def to_representation(self, instance: Payment_type):
+        return instance.name
+
     class Meta:
         model = Payment_type
         fields = "__all__"
@@ -37,6 +46,20 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order_item
         fields = ['product', 'qty']
+
+
+class GetOrderSerializers(serializers.ModelSerializer):
+    currency = CurrencySerializers()
+    city = CitySerializers()
+    payment_type = Payment_TypeSerializers()
+    item_count = serializers.SerializerMethodField(read_only=True)
+
+    def get_item_count(self, obj):
+        return obj.order_item.all().count()
+
+    class Meta:
+        model = Order
+        fields = '__all__'  # ['__all__', 'order_item']
 
 
 class OrderSerializers(serializers.ModelSerializer):
@@ -66,6 +89,7 @@ class OrderSerializers(serializers.ModelSerializer):
 #     currency = CurrencySerializers(many=True, read_only=True)
 #     city = CitySerializers(many=True, read_only=True)
 #     payment_Type = Payment_TypeSerializers(many=True, read_only=True)
+
 
     class Meta:
         model = Order
