@@ -131,7 +131,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     # add_rate = models.ManyToManyField('Product_item', through='Rate')
 
     objects = MyUserManager()
-
     # EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
     # REQUIRED_FIELDS = ["email"]
@@ -200,6 +199,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         # swappable = "AUTH_USER_MODEL"
         db_table = 'User'
+        verbose_name = 'إدارة المسنخدمين'
 
 
 # Create your models here.
@@ -218,6 +218,7 @@ class Notification(models.Model):
 
     class Meta:
         db_table = 'Notification'
+        verbose_name = 'إدارة الاشعارات'
 
 
 class Promotion(models.Model):
@@ -243,6 +244,7 @@ class Promotion(models.Model):
 
     class Meta:
         db_table = 'Promotion'
+        verbose_name = 'إدارة العروض'
 
 
 class Category(MPTTModel):
@@ -290,6 +292,7 @@ class Category(MPTTModel):
 
     class Meta:
         db_table = 'Category'
+        verbose_name = 'إدارة لأصناف'
 
 
 class Product(models.Model):
@@ -327,6 +330,7 @@ class Product(models.Model):
 
     class Meta:
         db_table = 'Product'
+        verbose_name = 'إدارة المنتجات'
 
 
 class Promotion_product(models.Model):
@@ -343,6 +347,7 @@ class Promotion_product(models.Model):
     class Meta:
         db_table = 'Promotion_Product'
         unique_together = ("product", "promotion")
+        verbose_name = 'إدارة خصومات العروض'
 
 
 class Image(models.Model):
@@ -367,6 +372,7 @@ class Review(models.Model):
 
     class Meta:
         db_table = 'Review'
+        verbose_name = 'إدارة التعليقات'
 
 
 class Review_Likes(models.Model):
@@ -378,6 +384,7 @@ class Review_Likes(models.Model):
     class Meta:
         db_table = 'Review_Likes'
         unique_together = ("review", "user")
+        verbose_name = 'إدارة المسنخدمين'
 
 
 class Cart(models.Model):
@@ -422,6 +429,7 @@ class Rate(models.Model):
     class Meta:
         db_table = 'Rate'
         unique_together = ("product", "user")
+        verbose_name = 'إدارة تقييمات المستخدمين'
 
 
 class City(models.Model):
@@ -430,6 +438,7 @@ class City(models.Model):
 
     class Meta:
         db_table = 'City'
+        verbose_name = 'إدارة المحافضات والمدن'
 
     def __str__(self) -> str:
         return str(self.name)
@@ -443,6 +452,7 @@ class Currency (models.Model):
 
     class Meta:
         db_table = 'Currency'
+        verbose_name = 'إدارة العملات'
 
     def __str__(self) -> str:
 
@@ -455,6 +465,10 @@ class Payment_type(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        db_table = 'Payment_type'
+        verbose_name = 'إدارة طرق الدفع'
 
 
 class Order(models.Model):
@@ -491,6 +505,7 @@ class Order(models.Model):
 
     class Meta:
         db_table = 'Order'
+        verbose_name = 'إدارة الطلبات'
 
 
 class Order_item(models.Model):
