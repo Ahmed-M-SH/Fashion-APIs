@@ -68,6 +68,10 @@ class CreateRatingView(viewsets.ModelViewSet):
     def get_serializer_context(self):
         return {'user': self.request.user}
 
+    def create(self, request, *args, **kwargs):
+        print(request.data)
+        return super().create(request, *args, **kwargs)
+
 
 class CreateReviewLikeView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

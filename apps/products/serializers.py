@@ -200,12 +200,27 @@ class ReviewLikeSerializers(serializers.ModelSerializer):
 
 
 class RateSerializers(serializers.ModelSerializer):
-    user = serializers.IntegerField(read_only=True)
+    user = serializers.HiddenField(default=None)
+    # product = serializers.IntegerField()
 
     def validate(self, attrs):
         # self.user = self.context.get('user').id
         attrs['user'] = self.context.get('user')
         return super().validate(attrs)
+
+    def create(self, validated_data):
+        user = self.context['user']
+        product_id = validated_data['product']
+        rating_no = float(validated_data.get('rating_no') or 1)
+
+        # Check if the Rate object already exists for the given product and user
+        rating, created = Rate.objects.get_or_create(
+            user=user, product=product_id)
+
+        # Update the rating_no if the Rate object already exists
+        rating.rating_no = rating_no
+        rating.save()
+        return rating
 
     class Meta:
         model = Rate

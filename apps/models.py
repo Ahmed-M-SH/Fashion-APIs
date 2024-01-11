@@ -420,7 +420,7 @@ class Favorite(models.Model):
 
 class Rate(models.Model):
     rating_date = models.DateTimeField(auto_now=False, auto_now_add=True)
-    rating_no = models.FloatField(_("rating_no"), max_length=5)
+    rating_no = models.FloatField(_("rating_no"), max_length=5, default=0.0)
     user = models.ForeignKey(User, verbose_name=_(
         "User"), on_delete=models.CASCADE, related_name='rate')
     product = models.ForeignKey(Product, verbose_name=_(
