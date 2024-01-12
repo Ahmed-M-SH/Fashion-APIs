@@ -70,5 +70,5 @@ class FavoriteView(viewsets.ModelViewSet):
                     'error': f'error {e}'
                 }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            user.favorites.all().delete()
+            # user.favorites.all().delete()
             return Response(status=status.HTTP_200_OK)

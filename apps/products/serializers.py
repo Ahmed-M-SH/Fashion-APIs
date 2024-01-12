@@ -162,7 +162,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
         if rat.exists():
             try:
                 for s in rat:
-                    sub += s.rating
+                    sub += s.rating_no
                 return sub / rat.count()
             except:
                 sub = 0
@@ -211,7 +211,7 @@ class RateSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['user']
         product_id = validated_data['product']
-        rating_no = float(validated_data.get('rating_no') or 1)
+        rating_no = float(validated_data.get('rating_no'))
 
         # Check if the Rate object already exists for the given product and user
         rating, created = Rate.objects.get_or_create(
@@ -227,8 +227,8 @@ class RateSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class DeleteReviewLikeSerializers:
-    user = serializers.IntegerField
+class DeleteReviewLikeSerializers(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=None)
 
     class Meta:
         model = Review_Likes

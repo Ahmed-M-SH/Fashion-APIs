@@ -1,3 +1,4 @@
+from urllib import request
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -69,7 +70,6 @@ class CreateRatingView(viewsets.ModelViewSet):
         return {'user': self.request.user}
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
         return super().create(request, *args, **kwargs)
 
 
@@ -79,6 +79,12 @@ class CreateReviewLikeView(viewsets.ModelViewSet):
     serializer_class = serializers.ReviewLikeSerializers
     lookup_field = 'review_id'
     # lookup_url_kwarg = ['pk', 'review_id']
+
+    def get_queryset(self):
+        if self.action == 'destroy':
+            return Review_Likes.objects.filter(user=self.request.user)
+        else:
+            return Review_Likes.objects.all()
 
     def get_serializer_context(self):
         return {'user': self.request.user}
@@ -90,10 +96,6 @@ class CreateReviewLikeView(viewsets.ModelViewSet):
             return serializers.ReviewLikeSerializers
 
     def create(self, request, *args, **kwargs):
-        # serializers = self.get_serializer_class()
-        # serializers(data=request.data)
-        # print(dir(self.request.headers))
-        print(self.request.headers)
 
         serializers = self.serializer_class(
             data=request.data, context={'user': request.user})
