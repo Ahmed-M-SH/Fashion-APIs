@@ -67,12 +67,12 @@ class ProductSerializer(serializers.ModelSerializer):
             try:
                 for s in rat:
                     sub += s.rating_no
-                return sub / rat.count()
+                return round(sub / rat.count(), 1)
             except:
                 sub = 0
-                return sub
+                return round(sub, 1)
         else:
-            return sub
+            return round(sub, 1)
         # return user.review.filter(item=obj).count() if isinstance(user, User) else False
 
     class Meta:
@@ -163,12 +163,12 @@ class SingleProductSerializer(serializers.ModelSerializer):
             try:
                 for s in rat:
                     sub += s.rating_no
-                return sub / rat.count()
+                return round(sub / rat.count(), 1)
             except:
                 sub = 0
-                return sub
+                return round(sub, 1)
         else:
-            return sub
+            return round(sub, 1)
         # return user.review.filter(item=obj).count() if isinstance(user, User) else False
 
     def get_in_favorite(self, obj) -> bool:
