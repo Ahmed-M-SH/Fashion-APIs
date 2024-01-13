@@ -212,9 +212,10 @@ class Notification(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='notification', )
     time_created = models.DateTimeField(
-        _("Time Created"), auto_now=False, auto_now_add=True)
+        _("وقت الانشاء"), auto_now=False, auto_now_add=True)
     is_readed = models.BooleanField(
-        _("Read Status"), editable=False, default=False)
+        _("حالة القرائة"), editable=False, default=False)
+    is_pushed = models.BooleanField(_("حالة التلقي"))
 
     class Meta:
         db_table = 'Notification'
@@ -224,10 +225,10 @@ class Notification(models.Model):
 class Promotion(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    start_date = models.DateTimeField(_("Start Date"))
+    start_date = models.DateTimeField(_("موعد بدء العرض"))
     end_date = models.DateTimeField(
-        _("Promotion End Aftar"))
-    discount_rate = models.FloatField(_("discount rate"))
+        _("موعد انتهاء العرض"))
+    discount_rate = models.FloatField(_("قيمة الخصم"))
     is_active = models.BooleanField(_("Is Active"), default=True, blank=True)
     image = models.ImageField(
         _("صورة العرض"), upload_to="promotion-imag/", null=True, blank=True)
@@ -250,16 +251,16 @@ class Promotion(models.Model):
 class Category(MPTTModel):
     parent = TreeForeignKey(
         'self', on_delete=models.CASCADE, blank=True, related_name='children', null=True, default=0)
-    name = models.CharField(max_length=50)
+    name = models.CharField(_("اسم الصنف"), max_length=50)
     category_image = models.ImageField(
-        _("category image"), upload_to="category_image",)
+        _("صورة الصنف"), upload_to="category_image",)
 
     class MPTTMeta:
         # level_attr = 'parint'
         order_insertion_by = ['name']
 
     def __str__(self):
-        return f"name: {self.name} parent {self.parent} id {self.id} "
+        return f" {self.name} مشتق من {self.parent.name} "
 
     # @property
     # def image_dimensions(self):
@@ -297,10 +298,11 @@ class Category(MPTTModel):
 
 class Product(models.Model):
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='category')
-    name = models.CharField(max_length=50, default="")
-    price = models.DecimalField(_("Price"), decimal_places=2, max_digits=8)
-    description = models.TextField()
+        Category, on_delete=models.CASCADE, verbose_name=_("الصنف"), related_name='category')
+    name = models.CharField(_("اسم المنتج"), max_length=50, default="")
+    price = models.DecimalField(
+        _("سعر المنتج"), decimal_places=2, max_digits=8)
+    description = models.TextField(_("وصف المنتج"))
     # image = models.ImageField(_("Image"), upload_to="products_image",)
     # promotion = models.ManyToManyField(
     #     Promotion, verbose_name=_("Promotions"), through='Promotion_product')
@@ -328,6 +330,9 @@ class Product(models.Model):
         else:
             return 0
 
+    def __str__(self) -> str:
+        return self.name
+
     class Meta:
         db_table = 'Product'
         verbose_name = 'إدارة المنتجات'
@@ -335,14 +340,14 @@ class Product(models.Model):
 
 class Promotion_product(models.Model):
     promotion = models.ForeignKey(
-        Promotion, verbose_name=_("Promotion"), on_delete=models.DO_NOTHING, related_name='promotion_product')
+        Promotion, verbose_name=_("العرض"), on_delete=models.DO_NOTHING, related_name='promotion_product')
     product = models.ForeignKey(Product, verbose_name=_(
-        "Product"), on_delete=models.DO_NOTHING, related_name='promotion_product')
+        "المنتج"), on_delete=models.DO_NOTHING, related_name='promotion_product')
     created_date = models.DateTimeField(
-        _("created at"), auto_now=False, auto_now_add=True)
+        _("تم الانشائ في "), auto_now=False, auto_now_add=True)
     updated_date = models.DateTimeField(
-        _("Updated at"), auto_now=True, auto_now_add=False)
-    is_active = models.BooleanField(_("Active Status"), default=True)
+        _("اخر تعديل في"), auto_now=True, auto_now_add=False)
+    is_active = models.BooleanField(_("حالة التفعيل"), default=True)
 
     class Meta:
         db_table = 'Promotion_Product'
@@ -351,9 +356,9 @@ class Promotion_product(models.Model):
 
 
 class Image(models.Model):
-    image = models.ImageField(_("Images"), upload_to="products_image",)
+    image = models.ImageField(_("الصورة"), upload_to="products_image",)
     product = models.ForeignKey(Product, verbose_name=_(
-        "Products"), on_delete=models.CASCADE, related_name="image")
+        "المنتج"), on_delete=models.CASCADE, related_name="image")
 
     class Meta:
         db_table = 'Product_image'
@@ -364,9 +369,9 @@ class Image(models.Model):
 
 class Review(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
-        "User"), on_delete=models.CASCADE, related_name='review')
+        "المستخدم"), on_delete=models.CASCADE, related_name='review')
     product = models.ForeignKey(Product, verbose_name=_(
-        "Product"), on_delete=models.CASCADE, related_name='review')
+        "المنتج"), on_delete=models.CASCADE, related_name='review')
     review_date = models.DateTimeField(auto_now_add=True)
     review_text = models.TextField()
 
@@ -384,15 +389,15 @@ class Review_Likes(models.Model):
     class Meta:
         db_table = 'Review_Likes'
         unique_together = ("review", "user")
-        verbose_name = 'إدارة المسنخدمين'
+        verbose_name = 'إدارة اعجابات المستخدمين'
 
 
 class Cart(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
-        "User"), on_delete=models.CASCADE, related_name='cart')
+        "المستخدم"), on_delete=models.CASCADE, related_name='cart')
     product = models.ForeignKey(Product, verbose_name=_(
-        "Product"), on_delete=models.CASCADE, related_name='cart')
-    qty = models.IntegerField(_("qty"), default=1)
+        "المنتج"), on_delete=models.CASCADE, related_name='cart')
+    qty = models.IntegerField(_("الكمية"), default=1)
     date = models.DateTimeField(auto_now=False, auto_now_add=True)
 
     class Meta:
@@ -420,7 +425,7 @@ class Favorite(models.Model):
 
 class Rate(models.Model):
     rating_date = models.DateTimeField(auto_now=False, auto_now_add=True)
-    rating_no = models.FloatField(_("rating_no"), max_length=5, default=0.0)
+    rating_no = models.FloatField(_("التقييم"), max_length=5, default=0.0)
     user = models.ForeignKey(User, verbose_name=_(
         "User"), on_delete=models.CASCADE, related_name='rate')
     product = models.ForeignKey(Product, verbose_name=_(
@@ -433,7 +438,7 @@ class Rate(models.Model):
 
 
 class City(models.Model):
-    name = models.CharField(_("City Name"), max_length=50)
+    name = models.CharField(_("اسم المدينة"), max_length=50)
     is_active = models.BooleanField(_("تفعيل المدينة"), default=True)
 
     class Meta:
@@ -445,7 +450,7 @@ class City(models.Model):
 
 
 class Currency (models.Model):
-    currency_name = models.CharField(_("Currency Name"), max_length=50)
+    currency_name = models.CharField(_("اسم العملة"), max_length=50)
     conversion_factor = models.DecimalField(
         _("Conversion Factor (معامل التحويل)"), max_digits=12, decimal_places=2)
     is_active = models.BooleanField(_("تفعيل العملة"), default=True)
@@ -473,28 +478,28 @@ class Payment_type(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
-        "User"), on_delete=models.DO_NOTHING, related_name='order')
+        "المستخدم"), on_delete=models.DO_NOTHING, related_name='order')
     city = models.ForeignKey(City, verbose_name=_(
-        "City"), on_delete=models.DO_NOTHING, related_name='order')
+        "المدينة"), on_delete=models.DO_NOTHING, related_name='order')
     currency = models.ForeignKey(Currency, verbose_name=_(
-        "Currency"), on_delete=models.DO_NOTHING, related_name='order',)
+        "العملة"), on_delete=models.DO_NOTHING, related_name='order',)
     proof_of_payment_image = models.ImageField(
-        _("proof_of_payment_image"), upload_to="proof_of_payment_image", blank=True, null=True)
+        _("صورة اثبات الدفع"), upload_to="proof_of_payment_image", blank=True, null=True)
     payment_type = models.ForeignKey(Payment_type, verbose_name=_(
         "طريقة الدفع"), on_delete=models.DO_NOTHING)
     customer_name = models.CharField(
-        _("customer name"), max_length=100, blank=True, null=True)
+        _("اسم العميل"), max_length=100, blank=True, null=True)
     customer_phone = models.CharField(
-        _("customer phone number"), max_length=50)
+        _("رقم هاتف العميل"), max_length=50)
     customer_phone2 = models.CharField(
-        _("Alternative phone number"), max_length=50, null=True, blank=True)
+        _("رقم هاتف بديل"), max_length=50, null=True, blank=True)
     total_paid = models.DecimalField(
-        _("Total Paid"), max_digits=12, decimal_places=2, blank=True, null=True, default=0.0)
+        _("اجمالي المدفوع"), max_digits=12, decimal_places=2, blank=True, null=True, default=0.0)
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
     is_delivered = models.BooleanField(
-        _("IS Delivered?"), default=False, blank=True)
-    address = models.TextField(_("Address"), blank=True, default="")
-    is_proof = models.BooleanField(_("Proofit status"), default=False)
+        _("حالة التوصيل"), default=False, blank=True)
+    address = models.TextField(_("العنوان"), blank=True, default="")
+    is_proof = models.BooleanField(_("حالة الاثبات"), default=False)
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -510,15 +515,15 @@ class Order(models.Model):
 
 class Order_item(models.Model):
     product = models.ForeignKey(Product, verbose_name=_(
-        "Products"), on_delete=models.DO_NOTHING, related_name="order_item")
+        "المنتج"), on_delete=models.DO_NOTHING, related_name="order_item")
     order = models.ForeignKey(Order, verbose_name=_(
-        "Order"), on_delete=models.DO_NOTHING, related_name="order_item")
-    qty = models.IntegerField(_("qty"))
+        "الطلب"), on_delete=models.DO_NOTHING, related_name="order_item")
+    qty = models.IntegerField(_("الكمية"))
     date = models.DateTimeField(_("Date"), auto_now=False, auto_now_add=True)
     price = models.DecimalField(
-        _("Price"), decimal_places=2, max_digits=12, blank=True)
+        _("السعر"), decimal_places=2, max_digits=12, blank=True)
     total_price = models.DecimalField(
-        _("Total Price"), decimal_places=2, max_digits=12, blank=True, editable=False,)
+        _("السعر الاجمالي"), decimal_places=2, max_digits=12, blank=True, editable=False,)
 
     def save(self, *args, **kwargs):
         # Calculate the total price based on the quantity and price of the product
@@ -526,6 +531,9 @@ class Order_item(models.Model):
         self.price = self.product.get_new_price()
         self.total_price = self.qty * self.price
         super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return f"المنتج {self.product.name} الكمية {self.qty}"
 
     class Meta:
         db_table = 'Order_item'
