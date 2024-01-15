@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from apps.views import download_app
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +30,7 @@ urlpatterns = [
 
     # path('', include('admin_material.urls')),
     path('', include('dashboard.urls')),
+    path("download/", download_app, name="download_page"),
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
     path('schema/', Schema.as_view()),
     path('api/', include('apps.urls')), path('api/schema/',

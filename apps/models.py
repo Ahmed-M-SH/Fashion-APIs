@@ -260,7 +260,7 @@ class Category(MPTTModel):
         order_insertion_by = ['name']
 
     def __str__(self):
-        return f" {self.name} مشتق من {self.parent.name} "
+        return f" {self.name} "
 
     # @property
     # def image_dimensions(self):

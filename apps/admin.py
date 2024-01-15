@@ -189,6 +189,7 @@ class CustomPromotionProductForm(forms.ModelForm):
 
 class CustomPromotionProductAdmin(admin.ModelAdmin):
     form = CustomPromotionProductForm
+    list_display = ('product', 'promotion')
 
 
 # admin.site.register(Promotion_product, CustomPromotionProductAdmin)

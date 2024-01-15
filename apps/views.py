@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.shortcuts import get_object_or_404
@@ -30,3 +31,8 @@ def generate_pdf(request, order_id):
         return HttpResponse('Error generating PDF', status=500)
 
     return response
+
+
+def download_app(request, *args, **kwargs):
+
+    return render(request, "pages/about.html", {})
