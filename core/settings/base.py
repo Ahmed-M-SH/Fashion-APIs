@@ -140,7 +140,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "../static",
 
 ]
-STATIC_ROOT = BASE_DIR / '../assets'
+STATIC_ROOT = BASE_DIR / '../static'
 
 
 APPEND_SLASH = False
