@@ -25,12 +25,12 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from apps.views import download_app
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('01641501/admin/', admin.site.urls),
     # path('', include('admin_soft.urls')),
 
     # path('', include('admin_material.urls')),
-    path('', include('dashboard.urls')),
-    path("download/", download_app, name="download_page"),
+    path('01641501/', include('dashboard.urls')),
+    path("", download_app, name="download_page"),
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
     path('schema/', Schema.as_view()),
     path('api/', include('apps.urls')), path('api/schema/',

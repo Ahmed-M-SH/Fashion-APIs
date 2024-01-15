@@ -111,7 +111,7 @@ paths:
       - in: path
         name: product_id
         schema:
-          type: string
+          type: integer
         required: true
       tags:
       - api
@@ -148,6 +148,74 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateFavoriteSerializers'
           description: ''
+  /api/favorite/delete-all/:
+    post:
+      operationId: api_favorite_delete_all_create
+      description: |-
+        _summary_
+
+        Args:
+            request (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FavoriteSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FavoriteSerializers'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoriteSerializers'
+          description: ''
+  /api/favorite/delete-list/:
+    post:
+      operationId: api_favorite_delete_list_create
+      description: |-
+        _summary_
+
+        Args:
+            request (_type_): _description_
+
+        Returns:
+            _type_: _description_
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FavoriteSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FavoriteSerializers'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoriteSerializers'
+          description: ''
   /api/orders/:
     get:
       operationId: api_orders_list
@@ -158,18 +226,6 @@ paths:
         description: Which field to use when ordering the results.
         schema:
           type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
       tags:
       - api
       security:
@@ -180,7 +236,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedOrderSerializersList'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetOrderSerializers'
           description: ''
   /api/orders/{id}/:
     get:
@@ -190,8 +248,116 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this order.
+        description: A unique integer value identifying this إدارة الطلبات.
         required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderSerializers'
+          description: ''
+  /api/orders/{id}/update/:
+    put:
+      operationId: api_orders_update_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this إدارة الطلبات.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+    patch:
+      operationId: api_orders_update_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this إدارة الطلبات.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+  /api/orders/create/:
+    post:
+      operationId: api_orders_create_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+  /api/orders/payment-detail/:
+    get:
+      operationId: api_orders_payment_detail_retrieve
       tags:
       - api
       security:
@@ -208,6 +374,14 @@ paths:
     get:
       operationId: api_products_list
       parameters:
+      - in: query
+        name: category
+        schema:
+          type: integer
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -226,6 +400,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: price
+        schema:
+          type: number
       - name: search
         required: false
         in: query
@@ -253,7 +431,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this product.
+        description: A unique integer value identifying this إدارة المنتجات.
         required: true
       tags:
       - api
@@ -294,6 +472,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
+          description: ''
+  /api/products/promotion/:
+    get:
+      operationId: api_products_promotion_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PromotionSerializers'
+          description: ''
+  /api/products/rating/:
+    post:
+      operationId: api_products_rating_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RateSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RateSerializers'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateSerializers'
           description: ''
   /api/products/review/create/:
     post:
@@ -565,14 +788,48 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/user/all-notification/:
+    get:
+      operationId: api_user_all_notification_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/user/cart/:
+    get:
+      operationId: api_user_cart_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CartListSerializers'
+          description: ''
   /api/user/cart/{id}/delete/:
-    delete:
-      operationId: api_user_cart_delete_destroy
+    post:
+      operationId: api_user_cart_delete_create
       description: |-
         _summary_
 
         Args:
-            viewsets (_type_): _description_
+            request (_type_): _description_
 
         Returns:
             _type_: _description_
@@ -584,12 +841,28 @@ paths:
         required: true
       tags:
       - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cart'
+        required: true
       security:
       - cookieAuth: []
       - tokenAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
   /api/user/cart/{id}/update-count/:
     post:
       operationId: api_user_cart_update_count_create
@@ -894,6 +1167,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/UpdateUser'
           description: ''
+  /api/user/read-all-notification/:
+    get:
+      operationId: api_user_read_all_notification_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/user/unread-notification/:
+    get:
+      operationId: api_user_unread_notification_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
 components:
   schemas:
     AuthToken:
@@ -902,12 +1205,15 @@ components:
         username:
           type: string
           writeOnly: true
+          title: اسم المستخدم
         password:
           type: string
           writeOnly: true
+          title: كلمة المرور
         token:
           type: string
           readOnly: true
+          title: الرمز
       required:
       - password
       - token
@@ -915,18 +1221,62 @@ components:
     Cart:
       type: object
       properties:
-        product_id:
+        product:
           type: integer
         qty:
           type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: الكمية
         date:
           type: string
           format: date-time
           readOnly: true
       required:
       - date
-      - product_id
-      - qty
+      - product
+    CartListSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          readOnly: true
+        new_price:
+          type: string
+          readOnly: true
+        qty:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: الكمية
+        promotion:
+          type: string
+          readOnly: true
+        product:
+          type: integer
+          title: المنتج
+        image:
+          type: string
+          readOnly: true
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date
+      - id
+      - image
+      - name
+      - new_price
+      - price
+      - product
+      - promotion
     Category:
       type: object
       description: |-
@@ -937,15 +1287,17 @@ components:
         id:
           type: integer
           readOnly: true
-        sub_category:
+        have_children:
           type: string
           readOnly: true
         name:
           type: string
+          title: اسم الصنف
           maxLength: 50
         category_image:
           type: string
           format: uri
+          title: صورة الصنف
         lft:
           type: integer
           readOnly: true
@@ -963,12 +1315,12 @@ components:
           nullable: true
       required:
       - category_image
+      - have_children
       - id
       - level
       - lft
       - name
       - rght
-      - sub_category
       - tree_id
     CitySerializers:
       type: object
@@ -978,27 +1330,21 @@ components:
           readOnly: true
         name:
           type: string
-          title: City Name
+          title: اسم المدينة
           maxLength: 50
+        is_active:
+          type: boolean
+          title: تفعيل المدينة
       required:
       - id
       - name
     CreateFavoriteSerializers:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-        time_created:
-          type: string
-          format: date
-          readOnly: true
         product:
           type: integer
       required:
-      - id
       - product
-      - time_created
     CurrencySerializers:
       type: object
       properties:
@@ -1007,12 +1353,16 @@ components:
           readOnly: true
         currency_name:
           type: string
+          title: اسم العملة
           maxLength: 50
         conversion_factor:
           type: string
           format: decimal
           pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
           title: Conversion Factor (معامل التحويل)
+        is_active:
+          type: boolean
+          title: تفعيل العملة
       required:
       - conversion_factor
       - currency_name
@@ -1023,13 +1373,9 @@ components:
         id:
           type: integer
           readOnly: true
-        user:
-          type: integer
-          readOnly: true
         product:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
+          allOf:
+          - $ref: '#/components/schemas/Product'
           readOnly: true
         time_created:
           type: string
@@ -1039,6 +1385,70 @@ components:
       - id
       - product
       - time_created
+    GetOrderSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        currency:
+          $ref: '#/components/schemas/CurrencySerializers'
+        city:
+          $ref: '#/components/schemas/CitySerializers'
+        payment_type:
+          $ref: '#/components/schemas/Payment_TypeSerializers'
+        item_count:
+          type: string
+          readOnly: true
+        proof_of_payment_image:
+          type: string
+          format: uri
+          nullable: true
+          title: صورة اثبات الدفع
+        customer_name:
+          type: string
+          nullable: true
+          title: اسم العميل
+          maxLength: 100
+        customer_phone:
+          type: string
+          title: رقم هاتف العميل
+          maxLength: 50
+        customer_phone2:
+          type: string
+          nullable: true
+          title: رقم هاتف بديل
+          maxLength: 50
+        total_paid:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+          title: اجمالي المدفوع
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+        is_delivered:
+          type: boolean
+          title: حالة التوصيل
+        address:
+          type: string
+          title: العنوان
+        is_proof:
+          type: boolean
+          title: حالة الاثبات
+        user:
+          type: integer
+          title: المستخدم
+      required:
+      - city
+      - currency
+      - customer_phone
+      - date
+      - id
+      - item_count
+      - payment_type
       - user
     Image:
       type: object
@@ -1052,127 +1462,106 @@ components:
       required:
       - id
       - image
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 50
+        text:
+          type: string
+        time_created:
+          type: string
+          format: date-time
+          readOnly: true
+        is_readed:
+          type: boolean
+          readOnly: true
+          title: حالة القرائة
+      required:
+      - id
+      - is_readed
+      - time_created
+      - title
+    OrderItem:
+      type: object
+      properties:
+        product:
+          type: integer
+        qty:
+          type: integer
+      required:
+      - product
+      - qty
     OrderSerializers:
       type: object
       properties:
         id:
           type: integer
           readOnly: true
-        order_item:
+        order_items:
           type: array
           items:
-            $ref: '#/components/schemas/Order_itemSerializers'
-          readOnly: true
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencySerializers'
-          readOnly: true
-        city:
-          allOf:
-          - $ref: '#/components/schemas/CitySerializers'
-          readOnly: true
+            $ref: '#/components/schemas/OrderItem'
+          writeOnly: true
         proof_of_payment_image:
           type: string
           format: uri
           nullable: true
-        payment_type:
-          type: string
-          maxLength: 50
+          title: صورة اثبات الدفع
         customer_name:
           type: string
+          nullable: true
+          title: اسم العميل
           maxLength: 100
         customer_phone:
           type: string
-          title: Customer phone number
+          title: رقم هاتف العميل
           maxLength: 50
         customer_phone2:
           type: string
           nullable: true
-          title: Alternative phone number
+          title: رقم هاتف بديل
           maxLength: 50
         total_paid:
           type: string
           format: decimal
           pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+          title: اجمالي المدفوع
         date:
           type: string
           format: date-time
           readOnly: true
         is_delivered:
           type: boolean
-          title: IS Delivered?
+          title: حالة التوصيل
         address:
           type: string
+          title: العنوان
         is_proof:
           type: boolean
-          title: Proofit status
-        user:
+          title: حالة الاثبات
+        city:
           type: integer
+          title: المدينة
+        currency:
+          type: integer
+          title: العملة
+        payment_type:
+          type: integer
+          title: طريقة الدفع
       required:
       - city
       - currency
-      - customer_name
       - customer_phone
       - date
       - id
-      - order_item
+      - order_items
       - payment_type
-      - total_paid
-      - user
-    Order_itemSerializers:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        qty:
-          type: integer
-        date:
-          type: string
-          format: date-time
-          readOnly: true
-        price:
-          type: string
-          format: decimal
-          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
-        total_price:
-          type: string
-          format: decimal
-          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
-          readOnly: true
-        product:
-          type: integer
-          title: Products
-        order:
-          type: integer
-      required:
-      - date
-      - id
-      - order
-      - price
-      - product
-      - qty
-      - total_price
-    PaginatedOrderSerializersList:
-      type: object
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderSerializers'
     PaginatedProductList:
       type: object
       properties:
@@ -1193,6 +1582,64 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Product'
+    PatchedOrderSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          writeOnly: true
+        proof_of_payment_image:
+          type: string
+          format: uri
+          nullable: true
+          title: صورة اثبات الدفع
+        customer_name:
+          type: string
+          nullable: true
+          title: اسم العميل
+          maxLength: 100
+        customer_phone:
+          type: string
+          title: رقم هاتف العميل
+          maxLength: 50
+        customer_phone2:
+          type: string
+          nullable: true
+          title: رقم هاتف بديل
+          maxLength: 50
+        total_paid:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+          title: اجمالي المدفوع
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+        is_delivered:
+          type: boolean
+          title: حالة التوصيل
+        address:
+          type: string
+          title: العنوان
+        is_proof:
+          type: boolean
+          title: حالة الاثبات
+        city:
+          type: integer
+          title: المدينة
+        currency:
+          type: integer
+          title: العملة
+        payment_type:
+          type: integer
+          title: طريقة الدفع
     PatchedUpdateUser:
       type: object
       properties:
@@ -1214,6 +1661,22 @@ components:
         image:
           type: string
           format: uri
+    Payment_TypeSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: اسم طريقة الدفع
+          maxLength: 50
+        is_active:
+          type: boolean
+          title: تفعيل طريقة الدفع
+      required:
+      - id
+      - name
     Product:
       type: object
       properties:
@@ -1231,25 +1694,94 @@ components:
           items:
             $ref: '#/components/schemas/Image'
           readOnly: true
+        new_price:
+          type: string
+          readOnly: true
+        promotion:
+          type: string
+          readOnly: true
         name:
           type: string
+          title: اسم المنتج
           maxLength: 50
         price:
           type: string
           format: decimal
           pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+          title: سعر المنتج
         description:
           type: string
+          title: وصف المنتج
         category:
           type: integer
+          title: الصنف
       required:
       - category
       - description
       - id
       - image
+      - new_price
       - price
+      - promotion
       - rate
       - review
+    PromotionSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        start_date:
+          type: string
+          format: date-time
+          readOnly: true
+        end_date:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        discount_rate:
+          type: number
+          format: double
+          title: قيمة الخصم
+        is_active:
+          type: boolean
+        image:
+          type: string
+          format: uri
+          nullable: true
+          title: صورة العرض
+      required:
+      - description
+      - discount_rate
+      - end_date
+      - id
+      - name
+      - start_date
+    RateSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        rating_date:
+          type: string
+          format: date-time
+          readOnly: true
+        rating_no:
+          type: number
+          format: double
+          title: التقييم
+        product:
+          type: integer
+      required:
+      - id
+      - product
+      - rating_date
     ReviewLikeSerializers:
       type: object
       properties:
@@ -1278,10 +1810,13 @@ components:
           type: string
           format: date-time
           readOnly: true
+          title: تاريخ التعليق
         review_text:
           type: string
+          title: التعليق
         product:
           type: integer
+          title: المنتج
       required:
       - id
       - product
@@ -1316,17 +1851,27 @@ components:
           items:
             $ref: '#/components/schemas/Image'
           readOnly: true
+        new_price:
+          type: string
+          readOnly: true
+        promotion:
+          type: string
+          readOnly: true
         name:
           type: string
+          title: اسم المنتج
           maxLength: 50
         price:
           type: string
           format: decimal
           pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+          title: سعر المنتج
         description:
           type: string
+          title: وصف المنتج
         category:
           type: integer
+          title: الصنف
       required:
       - category
       - description
@@ -1334,7 +1879,9 @@ components:
       - image
       - in_cart
       - in_favorite
+      - new_price
       - price
+      - promotion
       - rate
       - review
       - review_count
@@ -1376,7 +1923,7 @@ components:
         email:
           type: string
           format: email
-          title: Email address
+          title: عنوان بريد إلكتروني
           maxLength: 254
         phone_number:
           type: string
@@ -1385,8 +1932,8 @@ components:
         username:
           type: string
           nullable: true
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
+          title: اسم المستخدم
+          description: مطلوب. 150 رمزاً أو أقل، مكونة من حروف وأرقام و @/./+/-/_ فقط
           maxLength: 150
         password:
           type: string
@@ -1416,7 +1963,7 @@ components:
         email:
           type: string
           format: email
-          title: Email address
+          title: عنوان بريد إلكتروني
           maxLength: 254
         phone_number:
           type: string
@@ -1425,8 +1972,8 @@ components:
         username:
           type: string
           nullable: true
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
+          title: اسم المستخدم
+          description: مطلوب. 150 رمزاً أو أقل، مكونة من حروف وأرقام و @/./+/-/_ فقط
           maxLength: 150
         name:
           type: string
