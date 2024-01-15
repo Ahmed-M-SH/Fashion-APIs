@@ -539,6 +539,18 @@ class Order_item(models.Model):
         db_table = 'Order_item'
 
 
+class Applcation(models.Model):
+    app_file = models.FileField(_("التطبيث"), upload_to="applcations")
+    size = models.CharField(_('حجم التطبيق'), default="", max_length=100)
+    download_count = models.IntegerField(
+        _("عدد مرات تحميل التطبيق"), default=0)
+    version = models.CharField(_("إصدار التطبيق"), max_length=50)
+    app_name = models.CharField(_("اسم التطبيق"), max_length=50)
+
+    class Meta:
+        db_table = 'Applcation'
+
+
 # ------------------------- Signals ------------------
 @receiver(post_save, sender=Promotion_product)
 def send_promotion_notification(sender, instance, created, **kwargs):
@@ -548,12 +560,12 @@ def send_promotion_notification(sender, instance, created, **kwargs):
     if created:
         try:
             users = User.objects.all()
-            notification_text = f"New promotion '{instance.promotion.name}' added for product '{instance.product.name}'."
+            notification_text = f" عرض جديد'{instance.promotion.name}' تمت إضافته للمنتج '{instance.product.name}'."
 
             with transaction.atomic():
                 for user in users:
                     Notification.objects.create(
-                        title="New Promotion Added",
+                        title="عرض جديد تمت إضافتة",
                         text=notification_text,
                         user=user,
                     )

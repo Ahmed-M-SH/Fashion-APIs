@@ -170,6 +170,12 @@ class CustomReviewAdmin(admin.ModelAdmin):
     list_filter = ('review_date', )
 
 
+class CustomApplcationAdmin(admin.ModelAdmin):
+    list_display = ('app_name', 'size', 'download_count')
+    search_fields = ('user', 'product', 'review_text')
+    list_filter = ('review_date', )
+
+
 admin.site.register(Review, CustomReviewAdmin)
 
 
