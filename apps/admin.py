@@ -1,5 +1,5 @@
 from django.db import models
-from .models import City, Currency, Favorite, Image, Notification, Payment_type, Product, Promotion, Cart, Category,  Order, Order_item, Promotion_product, Rate, Review, User, Review_Likes
+from .models import Applcation, City, Currency, Favorite, Image, Notification, Payment_type, Product, Promotion, Cart, Category,  Order, Order_item, Promotion_product, Rate, Review, User, Review_Likes
 from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
@@ -171,12 +171,13 @@ class CustomReviewAdmin(admin.ModelAdmin):
 
 
 class CustomApplcationAdmin(admin.ModelAdmin):
-    list_display = ('app_name', 'size', 'download_count')
-    search_fields = ('user', 'product', 'review_text')
-    list_filter = ('review_date', )
+    list_display = ('app_name', 'size', 'download_count', 'version')
+    search_fields = ('size', 'download_count', 'version')
+    list_filter = ('size', 'download_count', 'version')
 
 
 admin.site.register(Review, CustomReviewAdmin)
+admin.site.register(Applcation, CustomApplcationAdmin)
 
 
 class OrderItemInline(admin.TabularInline):
