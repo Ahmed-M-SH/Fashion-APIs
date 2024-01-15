@@ -372,8 +372,8 @@ class Review(models.Model):
         "المستخدم"), on_delete=models.CASCADE, related_name='review')
     product = models.ForeignKey(Product, verbose_name=_(
         "المنتج"), on_delete=models.CASCADE, related_name='review')
-    review_date = models.DateTimeField(auto_now_add=True)
-    review_text = models.TextField()
+    review_date = models.DateTimeField(_("تاريخ التعليق"), auto_now_add=True)
+    review_text = models.TextField(_('التعليق'))
 
     class Meta:
         db_table = 'Review'

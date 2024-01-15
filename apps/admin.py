@@ -148,22 +148,29 @@ class CategoryAdmin(DraggableMPTTAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 admin.site.register([
-    Order_item,
-    Promotion,
+    # Order_item,
+    # Promotion,
     # Promotion_product,
-    Cart,
+    # Cart,
     Rate,
-    Review_Likes,
-    Favorite,
-    City,
-    Currency,
+    # Review_Likes,
+    # Favorite,
+    # City,
+    # Currency,
     # Image
-    Notification,
-    Payment_type
+    # Notification,
+    # Payment_type
 
 ])
 
-admin.site.register(Review, admin.ModelAdmin)
+
+class CustomReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'review_text')
+    search_fields = ('user', 'product', 'review_text')
+    list_filter = ('review_date', )
+
+
+admin.site.register(Review, CustomReviewAdmin)
 
 
 class OrderItemInline(admin.TabularInline):
@@ -174,8 +181,9 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     list_display = ('id', 'customer_name',
-                    'customer_phone', 'total_paid', 'date')
+                    'customer_phone', 'is_delivered', 'date')
     search_fields = ['customer_name', 'customer_phone']
+    list_filter = ('payment_type', 'is_delivered', 'is_proof')
 
 
 admin.site.register(Order, OrderAdmin)
@@ -189,7 +197,9 @@ class CustomPromotionProductForm(forms.ModelForm):
 
 class CustomPromotionProductAdmin(admin.ModelAdmin):
     form = CustomPromotionProductForm
-    list_display = ('product', 'promotion')
+    list_display = ('product', 'promotion', 'is_active')
+    search_fields = ('product', 'promotion', 'is_active')
+    list_filter = ('product', 'promotion', 'is_active')
 
 
 # admin.site.register(Promotion_product, CustomPromotionProductAdmin)
@@ -219,7 +229,50 @@ class ImageInline(admin.StackedInline):
 
 class CustomProductAdmin(admin.ModelAdmin):
     inlines = [ImageInline, PromotionProductInline]
-    list_display = ('name', 'price')
+    list_display = ('name', 'price', 'category')
+    search_fields = ('name', 'price',)
+    list_filter = ('name', 'price')
 
 
 admin.site.register(Product, CustomProductAdmin)
+
+
+class CustomNotificationAdmin(admin.ModelAdmin):
+    extra = 1
+    list_display = ('user', 'title')
+    search_fields = ('user', 'title')
+    list_filter = ('user', 'title')
+
+
+admin.site.register(Notification, CustomNotificationAdmin)
+
+
+class CustomCurrencyAdmin(admin.ModelAdmin):
+    list_display = ('currency_name', 'conversion_factor', 'is_active')
+    extra = 1
+    search_fields = ('currency_name', 'conversion_factor', 'is_active')
+    list_filter = ('currency_name', 'conversion_factor', 'is_active')
+
+
+admin.site.register(Currency, CustomCurrencyAdmin)
+
+
+class CustomCityAdmin(admin.ModelAdmin):
+    list_display = ('name',  'is_active')
+    extra = 1
+    search_fields = ('name',  'is_active')
+    list_filter = ('name',  'is_active')
+
+
+admin.site.register([City, Payment_type], CustomCityAdmin)
+
+
+class CustomPromotionAdmin(admin.ModelAdmin):
+    list_display = ('name',  'is_active', 'discount_rate',
+                    'start_date', 'end_date')
+    extra = 1
+    search_fields = ('name',  'is_active', 'discount_rate')
+    list_filter = ('name',  'is_active', 'discount_rate')
+
+
+admin.site.register(Promotion, CustomPromotionAdmin)
