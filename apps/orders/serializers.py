@@ -10,8 +10,8 @@ class Order_itemSerializers(serializers.ModelSerializer):
 
 
 class CitySerializers(serializers.ModelSerializer):
-    def to_representation(self, instance: City):
-        return instance.name
+    # def to_representation(self, instance: City):
+    #     return instance.name
 
     class Meta:
         model = City
@@ -20,8 +20,8 @@ class CitySerializers(serializers.ModelSerializer):
 
 class CurrencySerializers(serializers.ModelSerializer):
 
-    def to_representation(self, instance: Currency):
-        return instance.currency_name
+    # def to_representation(self, instance: Currency):
+    #     return instance.currency_name
 
     class Meta:
         model = Currency
@@ -30,8 +30,8 @@ class CurrencySerializers(serializers.ModelSerializer):
 
 class Payment_TypeSerializers(serializers.ModelSerializer):
 
-    def to_representation(self, instance: Payment_type):
-        return instance.name
+    # def to_representation(self, instance: Payment_type):
+    #     return instance.name
 
     class Meta:
         model = Payment_type
