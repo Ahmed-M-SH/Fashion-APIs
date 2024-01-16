@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.template.loader import get_template
 from django.shortcuts import get_object_or_404
 from xhtml2pdf import pisa
 from .models import Order, Order_item  # Import your order models here
+from .models import Applcation as App
 
 
 def generate_pdf(request, order_id):
@@ -33,6 +34,32 @@ def generate_pdf(request, order_id):
     return response
 
 
-def download_app(request, *args, **kwargs):
+def generate_file_app(request, *args, **kwargs):
+    # Assuming you want to download the first application in the database
+    applcation = App.objects.first()
 
-    return render(request, "pages/about.html", {})
+    # Get the file path
+    file_path = applcation.app_file.path
+
+    try:
+        # Open the file for reading in binary mode
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(
+                file.read(), content_type='application/vnd.android.package-archive')
+            response['Content-Disposition'] = f'attachment; filename="{applcation.app_name}.apk"'
+            return response
+    except FileNotFoundError:
+        return HttpResponse('File not found', status=404)
+    except Exception as e:
+        return HttpResponse(f'Error: {str(e)}', status=500)
+
+
+def download_app(request, *args, **kwargs):
+    file = App.objects.order_by('-id').first()
+    data = {
+        # 'download_count': file.download_count,
+        # 'app_name': file.app_name,
+        # 'version': file.version,
+        'app': file
+    }
+    return render(request, "pages/about.html", data)

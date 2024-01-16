@@ -540,7 +540,7 @@ class Order_item(models.Model):
 
 
 class Applcation(models.Model):
-    app_file = models.FileField(_("التطبيث"), upload_to="applcations")
+    app_file = models.FileField(_("التطبيق"), upload_to="applcations")
     size = models.CharField(_('حجم التطبيق'), default="", max_length=100)
     download_count = models.IntegerField(
         _("عدد مرات تحميل التطبيق"), default=0)

@@ -16,14 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from apps.views import generate_pdf
+from apps.views import generate_file_app, generate_pdf, download_app
 from schema_graph.views import Schema
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from apps.views import download_app
-
 urlpatterns = [
     path('01641501/admin/', admin.site.urls),
     # path('', include('admin_soft.urls')),
@@ -32,6 +30,8 @@ urlpatterns = [
     path('01641501/', include('dashboard.urls')),
     path("", download_app, name="download_page"),
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
+    path('generate-app-file/', generate_file_app, name='generate_app'),
+
     path('schema/', Schema.as_view()),
     path('api/', include('apps.urls')), path('api/schema/',
                                              SpectacularAPIView.as_view(), name='schema'),

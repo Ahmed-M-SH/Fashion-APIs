@@ -92,10 +92,10 @@
         </div>
         <div class="card-body text-center">
           <p class="text-muted mt-4">عدد مرات التحميل</p>
-          <h4 class="mb-0">XX</h4>
+          <h4 class="mb-0">{{ app.download_count }}</h4>
         </div>
         <div class="card-footer text-muted text-center">
-          <a href="#" class="btn btn-primary mt-3">
+          <a href="{% url 'generate_app' %}" class="btn btn-primary mt-3">
             <i class="material-icons">cloud_download</i>
             تحميل
           </a>
