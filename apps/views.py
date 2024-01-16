@@ -47,6 +47,8 @@ def generate_file_app(request, *args, **kwargs):
             response = HttpResponse(
                 file.read(), content_type='application/vnd.android.package-archive')
             response['Content-Disposition'] = f'attachment; filename="{applcation.app_name}.apk"'
+            applcation.download_count += 1
+            applcation.save()
             return response
     except FileNotFoundError:
         return HttpResponse('File not found', status=404)
@@ -55,7 +57,7 @@ def generate_file_app(request, *args, **kwargs):
 
 
 def download_app(request, *args, **kwargs):
-    file = App.objects.order_by('-id').first()
+    file = App.objects.first()
     data = {
         # 'download_count': file.download_count,
         # 'app_name': file.app_name,
