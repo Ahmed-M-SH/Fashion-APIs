@@ -215,7 +215,7 @@ class Notification(models.Model):
         _("وقت الانشاء"), auto_now=False, auto_now_add=True)
     is_readed = models.BooleanField(
         _("حالة القرائة"), editable=False, default=False)
-    is_pushed = models.BooleanField(_("حالة التلقي"))
+    is_pushed = models.BooleanField(_("حالة التلقي"), default=False)
 
     class Meta:
         db_table = 'Notification'
