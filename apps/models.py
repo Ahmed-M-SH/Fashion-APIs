@@ -1,4 +1,3 @@
-from re import S
 from PIL import Image as PImage
 from xmlrpc.client import TRANSPORT_ERROR
 from django.db import transaction
