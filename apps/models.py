@@ -214,7 +214,7 @@ class Notification(models.Model):
         _("وقت الانشاء"), auto_now=False, auto_now_add=True)
     is_readed = models.BooleanField(
         _("حالة القرائة"), editable=False, default=False)
-    is_pushed = models.BooleanField(_("حالة التلقي"))
+    is_pushed = models.BooleanField(_("حالة التلقي"), default=False)
 
     class Meta:
         db_table = 'Notification'
@@ -259,7 +259,7 @@ class Category(MPTTModel):
         order_insertion_by = ['name']
 
     def __str__(self):
-        return f" {self.name} مشتق من {self.parent.name} "
+        return f" {self.name} "
 
     # @property
     # def image_dimensions(self):
@@ -371,8 +371,8 @@ class Review(models.Model):
         "المستخدم"), on_delete=models.CASCADE, related_name='review')
     product = models.ForeignKey(Product, verbose_name=_(
         "المنتج"), on_delete=models.CASCADE, related_name='review')
-    review_date = models.DateTimeField(auto_now_add=True)
-    review_text = models.TextField()
+    review_date = models.DateTimeField(_("تاريخ التعليق"), auto_now_add=True)
+    review_text = models.TextField(_('التعليق'))
 
     class Meta:
         db_table = 'Review'
@@ -538,6 +538,18 @@ class Order_item(models.Model):
         db_table = 'Order_item'
 
 
+class Applcation(models.Model):
+    app_file = models.FileField(_("التطبيق"), upload_to="applcations")
+    size = models.CharField(_('حجم التطبيق'), default="", max_length=100)
+    download_count = models.IntegerField(
+        _("عدد مرات تحميل التطبيق"), default=0)
+    version = models.CharField(_("إصدار التطبيق"), max_length=50)
+    app_name = models.CharField(_("اسم التطبيق"), max_length=50)
+
+    class Meta:
+        db_table = 'Applcation'
+
+
 # ------------------------- Signals ------------------
 @receiver(post_save, sender=Promotion_product)
 def send_promotion_notification(sender, instance, created, **kwargs):
@@ -547,12 +559,12 @@ def send_promotion_notification(sender, instance, created, **kwargs):
     if created:
         try:
             users = User.objects.all()
-            notification_text = f"New promotion '{instance.promotion.name}' added for product '{instance.product.name}'."
+            notification_text = f" عرض جديد'{instance.promotion.name}' تمت إضافته للمنتج '{instance.product.name}'."
 
             with transaction.atomic():
                 for user in users:
                     Notification.objects.create(
-                        title="New Promotion Added",
+                        title="عرض جديد تمت إضافتة",
                         text=notification_text,
                         user=user,
                     )

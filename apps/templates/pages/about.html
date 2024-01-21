@@ -1,0 +1,108 @@
+{% load tags %} 
+{% load i18n static admin_material %} 
+{% get_current_language as LANGUAGE_CODE %} 
+{% get_current_language_bidi as LANGUAGE_BIDI %} 
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <link
+            rel="apple-touch-icon"
+            sizes="76x76"
+            href="{% static 'img/apple-icon.png' %}"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            href="{% static 'img/favicon.png' %}"
+        />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Fashion Dashboard - {% block title %}{% endblock %}</title>
+        <!--     Fonts and icons     -->
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700"
+        />
+        <!-- Nucleo Icons -->
+        <link href="{% static 'css/nucleo-icons.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/nucleo-svg.css' %}" rel="stylesheet" />
+        <!-- Font Awesome Icons -->
+        <script
+            src="https://kit.fontawesome.com/42d5adcbca.js"
+            crossorigin="anonymous"
+        ></script>
+        <!-- Material Icons -->
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+            rel="stylesheet"
+        />
+        <!-- CSS Files -->
+        <link
+            id="pagestyle"
+            href="{% static 'css/material-dashboard.css' %}"
+            rel="stylesheet"
+        />
+
+        {% block extrastyle %}{% endblock extrastyle %}
+        <style>
+        .custom-navbar {
+            background-color: #f8f9fa;
+            /* other styles if needed */
+        }
+    </style>
+    </head>
+    <body>
+<div class="container">
+
+
+     <header class="header">
+          <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+        <!-- Your navbar content here -->
+   
+                {% comment %} <a class="navbar-brand" href="#">Your Logo</a> {% endcomment %}
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url 'admin:index' %}">الصفحه الرئيسية <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin:login' %}">تسجيل الدخول</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+    </div><br>
+    <div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card">
+        <div class="card-header text-center">
+          <h3 class="card-title">تحميل التطبيق</h3>
+        </div>
+        <div class="card-body text-center">
+          <p class="text-muted mt-4">عدد مرات التحميل</p>
+          <h4 class="mb-0">{{ app.download_count }}</h4>
+        </div>
+        <div class="card-footer text-muted text-center">
+          <a href="{% url 'generate_app' %}" class="btn btn-primary mt-3">
+            <i class="material-icons">cloud_download</i>
+            تحميل
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+   </body>
+</html>
