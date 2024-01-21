@@ -31,8 +31,8 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     path('generate-pdf/<int:order_id>/', generate_pdf, name='generate_pdf'),
     path('schema/', Schema.as_view()),
-    path('api/', include('apps.urls')), path('api/schema/',
-                                             SpectacularAPIView.as_view(), name='schema'),
+    path('api/', include('apps.urls')),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/doc/',
          SpectacularSwaggerView.as_view(url_name='schema'), name='api_doc'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
